@@ -1,0 +1,2 @@
+DATABASE_URL=mysql+pymysql://root:@localhost:3306/desarrollo_web
+JWT_SECRET_KEY=4f8a2b1c9d3e7f5a6b0c8d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f
