@@ -100,3 +100,13 @@ Puedes utilizar cualquiera de las siguientes cuentas para explorar las interface
 | **Dirección** | `direccion_prueba` | Monitorear estadísticas globales, auditar logs de seguridad y revisar actas. |
 | **Docente** | `docente1_prueba` | Llenar notas en su sección asignada y bloquear actas de evaluación. |
 | **Estudiante** | `estudiante1_prueba` | Solicitar matrícula de asignaturas, ver récord académico y pedir certificados. |
+
+---
+
+## 📝 Solución de Problemas Comunes (Troubleshooting)
+
+*   **Error de ejecución de scripts en PowerShell:** Si al activar el entorno virtual (`venv`) en Windows obtienes un error de permisos, abre PowerShell como Administrador y ejecuta por única vez:
+    ```powershell
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+    ```
+*   **Colisión de Puertos (EADDRINUSE):** Si el puerto `5000` (Backend) o `5173` (Frontend) ya está en uso por otro servicio de tu máquina, puedes reconfigurarlos en `Backend/run.py` o `Frontend/vite.config.js` respectivamente.
