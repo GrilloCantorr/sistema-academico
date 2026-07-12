@@ -130,7 +130,7 @@ class NotasService:
 
         progreso_actual = None
         if estudiante.progreso:
-            p = estudiante.progreso
+            p = estudiante.progreso[0]
             progreso_actual = {
                 "creditos_aprobados_acumulados": p.creditos_aprobados_acumulados,
                 "promedio_ponderado_acumulado": float(p.promedio_ponderado_acumulado) if p.promedio_ponderado_acumulado else None,
