@@ -23,6 +23,11 @@ TIPOS_DOCUMENTO_VALIDOS = {
     "Constancia de Estudios",
     "Certificado de Estudios",
     "Constancia de Tercio Superior",
+    "Constancia de estudios",
+    "Constancia de matricula",
+    "Certificado de notas",
+    "Record academico",
+    "Constancia de egreso"
 }
 
 
