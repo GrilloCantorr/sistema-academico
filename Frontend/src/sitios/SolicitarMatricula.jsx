@@ -37,33 +37,46 @@ export default function SolicitarMatricula() {
       obtenerCursosDisponibles(),
     ]);
     if (!resPeriodo.error) setPeriodo(resPeriodo.data);
-    if (!resCursos.error) setDatosCursos(resCursos.data);
+    if (!resCursos.error) {
+      const cursos = (resCursos.data.cursos || []).map(c => ({
+        ...c,
+        id: c.curso_id,
+        nombre: c.curso_nombre
+      }));
+      setDatosCursos({
+        regular: cursos.filter(c => c.tipo === "regular"),
+        repetir: cursos.filter(c => c.tipo === "repetir"),
+        adelanto: cursos.filter(c => c.tipo === "adelanto"),
+      });
+    }
     if (resCursos.error) setError(resCursos.error);
     setCargando(false);
   }
 
-  function toggleCurso(cursoId) {
+  function toggleCurso(seccionId) {
     setSeleccionados((prev) => {
-      if (prev.includes(cursoId)) return prev.filter((id) => id !== cursoId);
-      const curso = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []).find((c) => c.id === cursoId);
+      if (prev.includes(seccionId)) return prev.filter((id) => id !== seccionId);
+      const allCursos = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []) || [];
+      const curso = allCursos.find((c) => c.seccion_curso_id === seccionId);
       if (!curso) return prev;
       const creditosActuales = prev.reduce((sum, id) => {
-        const c = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []).find((x) => x.id === id);
+        const c = allCursos.find((x) => x.seccion_curso_id === id);
         return sum + (c?.creditos || 0);
       }, 0);
       if (creditosActuales + (curso.creditos || 0) > MAX_CREDITOS) return prev;
       const conflicto = prev.some((id) => {
-        const otro = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []).find((x) => x.id === id);
+        const otro = allCursos.find((x) => x.seccion_curso_id === id);
         return otro && hayConflictoHorario(curso, otro);
       });
       if (conflicto) return prev;
-      return [...prev, cursoId];
+      return [...prev, seccionId];
     });
   }
 
   function creditosSeleccionados() {
     return seleccionados.reduce((sum, id) => {
-      const curso = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []).find((c) => c.id === id);
+      const allCursos = datosCursos?.regular?.concat(datosCursos?.repetir || []).concat(datosCursos?.adelanto || []) || [];
+      const curso = allCursos.find((c) => c.seccion_curso_id === id);
       return sum + (curso?.creditos || 0);
     }, 0);
   }
@@ -83,19 +96,25 @@ export default function SolicitarMatricula() {
   }
 
   function renderCurso(curso, idx) {
-    const checked = seleccionados.includes(curso.id);
+    const checked = seleccionados.includes(curso.seccion_curso_id);
     const creditos = curso.creditos || 0;
     return (
-      <tr key={curso.id || idx} className="hover:bg-gray-50">
+      <tr key={curso.id || idx} className={`hover:bg-gray-50 ${!curso.habilitado ? "opacity-60 bg-gray-50" : ""}`}>
         <td className="px-4 py-3">
           <input
             type="checkbox"
             checked={checked}
-            onChange={() => toggleCurso(curso.id)}
-            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer"
+            onChange={() => toggleCurso(curso.seccion_curso_id)}
+            disabled={!curso.habilitado}
+            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           />
         </td>
-        <td className="px-4 py-3 text-sm text-gray-900 font-medium">{curso.nombre}</td>
+        <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+          {curso.nombre}
+          {!curso.habilitado && curso.motivo_bloqueo && (
+            <span className="text-xs text-red-500 block font-normal mt-0.5">{curso.motivo_bloqueo}</span>
+          )}
+        </td>
         <td className="px-4 py-3 text-sm text-gray-600">{creditos}</td>
         <td className="px-4 py-3 text-sm text-gray-600">
           {curso.horarios?.map((h, i) => (
