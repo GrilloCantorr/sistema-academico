@@ -35,6 +35,26 @@ export default function AdministracionAuditorias() {
 
   useEffect(() => { cargar(1); }, [cargar]);
 
+  const manejarExportar = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const respuesta = await fetch("http://127.0.0.1:5000/api/administracion/auditorias/exportar", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (!respuesta.ok) throw new Error("Error al descargar");
+      const blob = await respuesta.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "reporte_auditoria.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      alert("No se pudo exportar el reporte.");
+    }
+  };
+
   function cambiarFiltro(campo, valor) { setFiltros((p) => ({ ...p, [campo]: valor })); }
   function limpiarFiltros() { setFiltros(LIMPIAR_FILTROS); }
 
@@ -53,9 +73,17 @@ export default function AdministracionAuditorias() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Auditorias y reportes estrategicos</h2>
-        <p className="text-sm text-gray-500 mt-1">Consulta los eventos de administracion y el resumen institucional.</p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Auditorias y reportes estrategicos</h2>
+          <p className="text-sm text-gray-500 mt-1">Consulta los eventos de administracion y el resumen institucional.</p>
+        </div>
+        <button 
+          onClick={manejarExportar}
+          className="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+        >
+          Exportar Logs (.txt)
+        </button>
       </div>
 
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}

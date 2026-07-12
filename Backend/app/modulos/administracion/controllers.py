@@ -386,6 +386,30 @@ def listar_auditorias():
     })
 
 
+def exportar_auditorias():
+    registros = Auditoria.query.order_by(Auditoria.created_at.desc()).all()
+    
+    contenido = "REPORTE DE AUDITORÍA - PORTAL ACADÉMICO MINERVA\n"
+    contenido += "="*80 + "\n"
+    contenido += f"Generado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    contenido += "="*80 + "\n\n"
+    
+    for a in registros:
+        username = a.usuario.username if a.usuario else "Sistema"
+        fecha = a.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        contenido += f"[{fecha}] Usuario: {username} | Acción: {a.accion} | Tabla: {a.tabla_afectada}\n"
+        if a.detalle:
+            contenido += f"Detalles: {a.detalle}\n"
+        contenido += "-"*80 + "\n"
+        
+    from flask import Response
+    return Response(
+        contenido,
+        mimetype="text/plain",
+        headers={"Content-disposition": "attachment; filename=reporte_auditoria.txt"}
+    )
+
+
 def reportes_estrategicos():
     total_estudiantes = Estudiante.query.count()
     total_docentes = Docente.query.count()

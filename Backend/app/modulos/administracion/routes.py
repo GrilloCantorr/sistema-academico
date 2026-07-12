@@ -92,6 +92,11 @@ def registrar_docente():
 def listar_auditorias():
     return controllers.listar_auditorias()
 
+@administracion_bp.route('/auditorias/exportar', methods=['GET'])
+@rol_requerido("direccion")
+def exportar_auditorias():
+    return controllers.exportar_auditorias()
+
 @administracion_bp.route('/reportes-estrategicos', methods=['GET'])
 @rol_requerido("direccion")
 def reportes_estrategicos():
