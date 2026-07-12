@@ -107,14 +107,14 @@ export default function AdministracionAuditorias() {
               <label>Accion</label>
               <select value={filtros.accion} onChange={(e) => cambiarFiltro("accion", e.target.value)}>
                 <option value="">Todas</option>
-                {opcionesFiltro.acciones.map((a) => (<option key={a} value={a}>{traducirAccion(a)}</option>))}
+                {(opcionesFiltro.acciones || []).map((a) => (<option key={a} value={a}>{traducirAccion(a)}</option>))}
               </select>
             </div>
             <div>
               <label>Entidad</label>
               <select value={filtros.entidad} onChange={(e) => cambiarFiltro("entidad", e.target.value)}>
                 <option value="">Todas</option>
-                {opcionesFiltro.entidades.map((e) => (<option key={e} value={e}>{e}</option>))}
+                {(opcionesFiltro.entidades || []).map((e) => (<option key={e} value={e}>{e}</option>))}
               </select>
             </div>
             <div>
