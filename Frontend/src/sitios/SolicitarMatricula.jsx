@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { solicitarMatricula, obtenerPeriodoActual, obtenerCursosDisponibles, urlDescargarFicha } from "../servicios/matricula.servicio";
 
-const NOMBRES_DIA = ["", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
+const NOMBRES_DIA = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
 function hayConflictoHorario(cursoA, cursoB) {
   if (!cursoA.horarios?.length || !cursoB.horarios?.length) return false;
@@ -63,12 +63,19 @@ export default function SolicitarMatricula() {
         const c = allCursos.find((x) => x.seccion_curso_id === id);
         return sum + (c?.creditos || 0);
       }, 0);
-      if (creditosActuales + (curso.creditos || 0) > MAX_CREDITOS) return prev;
+      if (creditosActuales + (curso.creditos || 0) > MAX_CREDITOS) {
+        setError(`Límite excedido: No puedes matricularte en más de ${MAX_CREDITOS} créditos.`);
+        return prev;
+      }
       const conflicto = prev.some((id) => {
         const otro = allCursos.find((x) => x.seccion_curso_id === id);
         return otro && hayConflictoHorario(curso, otro);
       });
-      if (conflicto) return prev;
+      if (conflicto) {
+        setError("Conflicto de horario detectado con otra asignatura seleccionada.");
+        return prev;
+      }
+      setError(null);
       return [...prev, seccionId];
     });
   }
@@ -83,14 +90,14 @@ export default function SolicitarMatricula() {
 
   async function manejarEnvio(evento) {
     evento.preventDefault();
-    if (seleccionados.length === 0) { setError("Selecciona al menos un curso."); return; }
+    if (seleccionados.length === 0) { setError("Seleccione al menos un curso de la oferta académica."); return; }
     setError(null);
     setMensaje(null);
     setEnviando(true);
     const { data, error } = await solicitarMatricula(seleccionados);
     setEnviando(false);
     if (error) { setError(error); return; }
-    setMensaje("Solicitud de matricula enviada correctamente.");
+    setMensaje("Solicitud de matrícula enviada y registrada en el sistema.");
     setUltimaMatriculaId(data?.matricula_id);
     setSeleccionados([]);
   }
@@ -99,119 +106,126 @@ export default function SolicitarMatricula() {
     const checked = seleccionados.includes(curso.seccion_curso_id);
     const creditos = curso.creditos || 0;
     return (
-      <tr key={curso.id || idx} className={`hover:bg-gray-50 ${!curso.habilitado ? "opacity-60 bg-gray-50" : ""}`}>
-        <td className="px-4 py-3">
+      <tr key={curso.id || idx} className={`hover:bg-gray-50/50 transition-colors ${!curso.habilitado ? "opacity-50 bg-gray-50" : ""}`}>
+        <td className="px-6 py-4 text-center">
           <input
             type="checkbox"
             checked={checked}
             onChange={() => toggleCurso(curso.seccion_curso_id)}
             disabled={!curso.habilitado}
-            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
           />
         </td>
-        <td className="px-4 py-3 text-sm text-gray-900 font-medium">
-          {curso.nombre}
+        <td className="px-6 py-4">
+          <span className="text-gray-900 font-bold block text-base">{curso.nombre}</span>
+          <span className="text-xs text-gray-400 block mt-0.5">Sección ID: {curso.seccion_curso_id} · Aula: {curso.aula || "—"}</span>
           {!curso.habilitado && curso.motivo_bloqueo && (
-            <span className="text-xs text-red-500 block font-normal mt-0.5">{curso.motivo_bloqueo}</span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-50 text-red-700 border border-red-200 mt-1.5">{curso.motivo_bloqueo}</span>
           )}
         </td>
-        <td className="px-4 py-3 text-sm text-gray-600">{creditos}</td>
-        <td className="px-4 py-3 text-sm text-gray-600">
-          {curso.horarios?.map((h, i) => (
-            <span key={i} className="block">{NOMBRES_DIA[h.dia] || "?"} {h.hora_inicio?.slice(0, 5)}-{h.hora_fin?.slice(0, 5)}</span>
-          )) || "-"}
+        <td className="px-6 py-4 text-center font-extrabold text-gray-700 text-lg">{creditos} cr.</td>
+        <td className="px-6 py-4">
+          <div className="text-sm text-gray-700 font-semibold space-y-1">
+            {curso.horarios?.map((h, i) => (
+              <span key={i} className="block bg-slate-50 border border-gray-200/60 rounded px-2.5 py-1 inline-block mr-1">{NOMBRES_DIA[h.dia] || "?"} — {h.hora_inicio?.slice(0, 5)} a {h.hora_fin?.slice(0, 5)}</span>
+            )) || "—"}
+          </div>
         </td>
-        <td className="px-4 py-3 text-sm text-gray-600">{curso.aula || "-"}</td>
       </tr>
     );
   }
 
-  const Categorias = ({ titulo, cursos, color }) => {
+  const Categorias = ({ titulo, cursos, colorBadge, colorText }) => {
     if (!cursos?.length) return null;
     return (
-      <div className="mb-6">
-        <h4 className={`text-sm font-semibold ${color} uppercase tracking-wider mb-3`}>{titulo}</h4>
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-10"></th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Curso</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Creditos</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Horario</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aula</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">{cursos.map((c, i) => renderCurso(c, i))}</tbody>
-          </table>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm mb-8">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
+          <h3 className="text-lg font-bold text-gray-900">{titulo}</h3>
+          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${colorBadge}`}>{cursos.length} Ofertas</span>
         </div>
+        <table className="w-full text-base">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-14">Inscribir</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Asignatura / Curso</th>
+              <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-28">Créditos</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Horario de Clases</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">{cursos.map((c, i) => renderCurso(c, i))}</tbody>
+        </table>
       </div>
     );
   };
 
   const creditosTotales = creditosSeleccionados();
+  const creditosPorcentaje = Math.min((creditosTotales / MAX_CREDITOS) * 100, 100);
 
   if (cargando) {
-    return <div className="bg-white rounded-lg border border-gray-200 p-6"><p className="text-sm text-gray-500">Cargando...</p></div>;
+    return <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm text-center"><p className="text-sm text-gray-500">Cargando oferta académica...</p></div>;
   }
 
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Solicitar matricula</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          {periodo ? `Periodo academico: ${periodo.nombre || periodo}` : "Cargando periodo..."}
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Inscripción y Solicitud de Matrícula</h2>
+        <p className="text-base text-gray-500 mt-1">
+          {periodo ? `Periodo Académico Vigente: ${periodo.nombre || periodo}` : "Cargando periodo..."}
         </p>
       </div>
 
-      {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
-      {mensaje && <div className="mb-6 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">{mensaje}</div>}
+      {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl shadow-sm">⚠ {error}</div>}
+      {mensaje && <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold rounded-xl shadow-sm">✓ {mensaje}</div>}
 
       {ultimaMatriculaId && (
-        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-sm text-green-700 font-medium mb-2">Tu solicitud fue registrada.</p>
+        <div className="mb-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
+          <p className="text-base text-green-800 font-bold mb-3">✓ ¡Su solicitud de matrícula ha sido procesada correctamente!</p>
           <a
             href={urlDescargarFicha(ultimaMatriculaId)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-4 py-2 text-sm font-medium text-green-700 bg-white border border-green-300 rounded-lg hover:bg-green-50 transition-colors"
+            className="inline-block px-5 py-2.5 text-sm font-semibold text-green-700 bg-white border border-green-300 rounded-lg hover:bg-green-100 transition-colors shadow-sm no-underline"
           >
-            Descargar ficha
+            Descargar Constancia de Solicitud (PDF)
           </a>
-        </div>
-      )}
-
-      {error && !mensaje && error.includes("creditos") && (
-        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-sm text-yellow-800 font-medium">Limite de creditos: maximo {MAX_CREDITOS} creditos por ciclo.</p>
         </div>
       )}
 
       {datosCursos ? (
         <form onSubmit={manejarEnvio}>
-          <Categorias titulo="Cursos regulares" cursos={datosCursos.regular} color="text-gray-700" />
-          <Categorias titulo="Cursos a repetir" cursos={datosCursos.repetir} color="text-red-600" />
-          <Categorias titulo="Cursos de adelanto" cursos={datosCursos.adelanto} color="text-blue-600" />
+          <Categorias titulo="Cursos Regulares" cursos={datosCursos.regular} colorBadge="bg-gray-50 text-gray-700 border-gray-200" />
+          <Categorias titulo="Cursos a Repetir (Requerido)" cursos={datosCursos.repetir} colorBadge="bg-red-50 text-red-700 border-red-200" />
+          <Categorias titulo="Cursos de Adelanto" cursos={datosCursos.adelanto} colorBadge="bg-blue-50 text-blue-700 border-blue-200" />
 
-          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700">Creditos seleccionados:</span>
-              <span className="text-lg font-bold text-gray-900">{creditosTotales} / {MAX_CREDITOS}</span>
+          {/* Panel de Control de Créditos y Envío */}
+          <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="w-full md:w-2/3">
+              <div className="flex justify-between items-center mb-2.5">
+                <span className="text-base font-bold text-gray-750">Créditos de Matrícula Seleccionados</span>
+                <span className="text-xl font-black text-gray-900">{creditosTotales} / {MAX_CREDITOS} cr.</span>
+              </div>
+              <div className="w-full h-4 bg-gray-150 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-350 ${
+                    creditosTotales > 18 ? "bg-primary-dark" : "bg-primary"
+                  }`} 
+                  style={{ width: `${creditosPorcentaje}%` }} 
+                />
+              </div>
             </div>
+            <button
+              type="submit"
+              disabled={enviando || seleccionados.length === 0}
+              className="w-full md:w-auto px-8 py-3.5 bg-primary text-white text-base font-bold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+            >
+              {enviando ? "Registrando solicitud..." : "Enviar Solicitud Académica"}
+            </button>
           </div>
-
-          <button
-            type="submit"
-            disabled={enviando || seleccionados.length === 0}
-            className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          >
-            {enviando ? "Enviando..." : "Enviar solicitud de matricula"}
-          </button>
         </form>
       ) : (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <p className="text-sm text-gray-500">
-            {error || "No hay cursos disponibles para matricula en este periodo."}
+        <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm text-center">
+          <p className="text-base text-gray-500">
+            {error || "No se registran asignaturas disponibles para matrícula en este periodo académico."}
           </p>
         </div>
       )}

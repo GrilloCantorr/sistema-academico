@@ -23,69 +23,74 @@ export default function RecordMiHistorial() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Mi historial academico</h2>
-        <p className="text-sm text-gray-500 mt-1">Revisa tu historial completo, cursos aprobados y desaprobados, y el avance de tu plan de estudios.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mi Historial Curricular</h2>
+        <p className="text-base text-gray-500 mt-1">Avance curricular general, promedio ponderado acumulado y consolidado de méritos por ciclo.</p>
       </div>
 
-      {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
+      {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl">⚠ {error}</div>}
 
       {datos && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-primary rounded-lg p-6 text-white">
-              <div className="text-4xl font-bold">{datos.progreso_actual?.promedio_ponderado_acumulado ?? "—"}</div>
-              <div className="text-sm text-white/80 mt-1">Promedio Ponderado Acumulado (PPA)</div>
+          {/* Fichas de rendimiento grandes */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-primary rounded-xl p-8 text-white shadow-sm flex flex-col justify-between min-h-[140px]">
+              <div className="text-sm text-white/80 font-bold uppercase tracking-wider">Promedio Ponderado Acumulado</div>
+              <div className="text-5xl font-black mt-2">{datos.progreso_actual?.promedio_ponderado_acumulado ?? "—"}</div>
             </div>
-            <div className={`rounded-lg p-6 text-white ${
+            <div className={`rounded-xl p-8 text-white shadow-sm flex flex-col justify-between min-h-[140px] ${
               datos.progreso_actual?.estado_permanencia_nombre === "Regular" ? "bg-green-600"
-              : datos.progreso_actual?.estado_permanencia_nombre === "Bueno" ? "bg-primary"
-              : "bg-gray-500"
+              : datos.progreso_actual?.estado_permanencia_nombre === "Bueno" ? "bg-primary-dark"
+              : "bg-slate-500"
             }`}>
-              <div className="text-2xl font-bold">{datos.progreso_actual?.estado_permanencia_nombre ?? "—"}</div>
-              <div className="text-sm text-white/80 mt-1">Estado de permanencia</div>
+              <div className="text-sm text-white/80 font-bold uppercase tracking-wider">Estado de Permanencia</div>
+              <div className="text-4xl font-black mt-2">{datos.progreso_actual?.estado_permanencia_nombre ?? "—"}</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <div className="text-4xl font-bold text-gray-900">{datos.cursos?.length ?? 0}</div>
-              <div className="text-sm text-gray-500 mt-1">Total cursos cursados</div>
-              <div className="text-sm mt-1">
-                <span className="text-green-700">{aprobados} aprobados</span>
-                <span className="text-gray-400 mx-1">·</span>
-                <span className="text-red-600">{desaprobados} desaprobados</span>
+            <div className="bg-slate-50 rounded-xl p-8 border border-gray-200 shadow-sm flex flex-col justify-between min-h-[140px]">
+              <div className="text-sm text-gray-500 font-bold uppercase tracking-wider">Cursos Llevados</div>
+              <div className="mt-2">
+                <div className="text-5xl font-black text-gray-900">{datos.cursos?.length ?? 0}</div>
+                <div className="text-xs text-gray-400 mt-2 font-bold uppercase tracking-wider">
+                  <span className="text-green-700">{aprobados} Aprobados</span>
+                  <span className="mx-2">·</span>
+                  <span className="text-red-600">{desaprobados} Desaprobados</span>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Avance del plan de estudios */}
           {datos.plan_progreso && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Avance del plan de estudios</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Avance del Plan de Estudios</h3>
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex-1 min-w-[200px]">
-                  <div className="flex justify-between mb-1.5 text-sm">
-                    <span className="text-gray-600">Creditos aprobados</span>
-                    <span className="font-semibold text-gray-900">{datos.plan_progreso.creditos_aprobados} / {datos.plan_progreso.total_creditos_requeridos}</span>
+                  <div className="flex justify-between mb-2 text-sm font-semibold">
+                    <span className="text-gray-600">Créditos de carrera aprobados</span>
+                    <span className="text-gray-900">{datos.plan_progreso.creditos_aprobados} de {datos.plan_progreso.total_creditos_requeridos} cr.</span>
                   </div>
-                  <div className="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full flex items-center justify-center transition-all duration-500 ${
-                      datos.plan_progreso.porcentaje >= 100 ? "bg-green-500" : "bg-primary"
+                  <div className="w-full h-6 bg-gray-150 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full flex items-center justify-center transition-all duration-500 font-extrabold text-white text-xs ${
+                      datos.plan_progreso.porcentaje >= 100 ? "bg-green-600" : "bg-primary"
                     }`} style={{ width: `${Math.min(datos.plan_progreso.porcentaje, 100)}%` }}>
-                      <span className="text-xs font-bold text-white px-2">{datos.plan_progreso.porcentaje}%</span>
+                      {datos.plan_progreso.porcentaje}%
                     </div>
                   </div>
                 </div>
               </div>
               {datos.plan_progreso.porcentaje >= 100 && (
-                <p className="text-green-700 font-semibold mt-2">Completaste todos los creditos requeridos!</p>
+                <p className="text-green-700 font-bold text-base mt-3">🎉 ¡Felicidades! Completó satisfactoriamente el plan de estudios curricular.</p>
               )}
             </div>
           )}
 
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Cursos cursados</h3>
+          {/* Listado de cursos cursados */}
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between flex-wrap gap-4">
+              <h3 className="text-lg font-bold text-gray-900">Historial Detallado de Asignaturas</h3>
               <div className="flex gap-2">
                 {["todos", "aprobados", "desaprobados"].map((op) => (
                   <button key={op} onClick={() => setFiltro(op)}
-                    className={`px-3 py-1 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer ${
                       filtro === op ? "bg-primary text-white border-primary" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     }`}>
                     {op === "todos" ? "Todos" : op === "aprobados" ? "Aprobados" : "Desaprobados"}
@@ -94,25 +99,25 @@ export default function RecordMiHistorial() {
               </div>
             </div>
             {cursosFiltrados.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">No hay cursos que mostrar.</p>
+              <p className="text-sm text-gray-500 text-center py-12">No hay cursos para mostrar con el filtro seleccionado.</p>
             ) : (
-              <table className="w-full text-sm">
+              <table className="w-full text-base">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Curso</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nota final</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
+                    <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Periodo Académico</th>
+                    <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Asignatura / Curso</th>
+                    <th className="text-center px-4 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider w-32">Nota Promedio</th>
+                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Estado</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 bg-white">
                   {cursosFiltrados.map((c, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-gray-600">{c.periodo_academico_nombre}</td>
-                      <td className="px-4 py-3 text-gray-900 font-medium">{c.curso_nombre}</td>
-                      <td className="px-4 py-3 text-center font-semibold text-gray-900">{c.nota_final ?? "—"}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                    <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                      <td className="px-6 py-4 text-gray-600 font-medium">{c.periodo_academico_nombre}</td>
+                      <td className="px-6 py-4 text-gray-900 font-bold">{c.curso_nombre}</td>
+                      <td className="px-4 py-4 text-center font-extrabold text-gray-900 text-lg">{c.nota_final ?? "—"}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
                           c.estado_nombre === "Aprobado" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"
                         }`}>{c.estado_nombre}</span>
                       </td>
@@ -123,31 +128,32 @@ export default function RecordMiHistorial() {
             )}
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-            <div className="px-4 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Resumen por periodo</h3>
+          {/* Resumen por periodo */}
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+              <h3 className="text-lg font-bold text-gray-900">Resumen y Evolución Meritocrática por Periodo</h3>
             </div>
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Semestre</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Promedio</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Creditos</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Orden</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Clasificacion</th>
+                  <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
+                  <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Semestre</th>
+                  <th className="text-center px-4 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">PPA Ciclo</th>
+                  <th className="text-center px-4 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Créd. Aprobados</th>
+                  <th className="text-center px-4 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Orden Mérito</th>
+                  <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Clasificación Académica</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {datos.historial.map((item, index) => (
-                  <tr key={`${item.periodo_academico_id}-${index}`} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-600">{item.periodo_academico_nombre || item.periodo_academico_id}</td>
-                    <td className="px-4 py-3 text-gray-600">{item.semestre_codigo || item.semestre_id}</td>
-                    <td className="px-4 py-3 text-center font-semibold text-gray-900">{item.promedio_ponderado_periodo}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{item.creditos_aprobados_periodo}</td>
-                    <td className="px-4 py-3 text-center text-gray-600">{item.orden_merito}</td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">{item.tipo_clasificacion_nombre || item.tipo_clasificacion_id}</span>
+                  <tr key={`${item.periodo_academico_id}-${index}`} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 text-gray-600 font-medium">{item.periodo_academico_nombre || item.periodo_academico_id}</td>
+                    <td className="px-6 py-4 text-gray-600">{item.semestre_codigo || item.semestre_id}</td>
+                    <td className="px-4 py-4 text-center font-extrabold text-gray-900 text-lg">{item.promedio_ponderado_periodo}</td>
+                    <td className="px-4 py-4 text-center font-bold text-gray-700">{item.creditos_aprobados_periodo} cr.</td>
+                    <td className="px-4 py-4 text-center text-gray-600 font-bold">{item.orden_merito}</td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">{item.tipo_clasificacion_nombre || item.tipo_clasificacion_id}</span>
                     </td>
                   </tr>
                 ))}

@@ -26,76 +26,76 @@ export default function NotasMiHoja() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Mi hoja de notas</h2>
-        <p className="text-sm text-gray-500 mt-1">Consulta tus cursos, notas y progreso academico. Si dejas el semestre vacio, veras todo tu historial.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mi Planilla de Calificaciones</h2>
+        <p className="text-base text-gray-500 mt-1">Consulta detallada de notas parciales, exámenes finales y situación académica del estudiante.</p>
       </div>
 
-      {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
+      {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl">⚠ {error}</div>}
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm mb-8">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Filtrar por Semestre Académico</h3>
         <form onSubmit={cargarHoja}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-            <div>
-              <label>Filtrar por semestre</label>
-              <input type="number" placeholder="Opcional" value={semestreId} onChange={(e) => setSemestreId(e.target.value)} />
+            <div className="md:col-span-2">
+              <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Código del Semestre (Opcional)</label>
+              <input type="number" placeholder="Ej: 1 (deje vacío para ver todo el historial)" value={semestreId} onChange={(e) => setSemestreId(e.target.value)} />
             </div>
             <div>
-              <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors cursor-pointer">Consultar</button>
+              <button type="submit" className="w-full px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-sm cursor-pointer">Consultar Planilla</button>
             </div>
           </div>
         </form>
       </div>
 
-      {cargando && <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8"><p className="text-sm text-gray-500">Cargando notas...</p></div>}
+      {cargando && <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm text-center mb-8"><p className="text-sm text-gray-500">Cargando calificaciones...</p></div>}
 
       {!cargando && !error && (
         <>
           {progresoActual && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Progreso actual</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl font-bold text-primary">{progresoActual.creditos_aprobados_acumulados}</div>
-                  <div className="text-sm text-gray-500 mt-1">Creditos aprobados</div>
+            <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Resumen del Rendimiento Acumulado</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                  <div className="text-4xl font-black text-primary">{progresoActual.creditos_aprobados_acumulados} cr.</div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Créditos Aprobados</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl font-bold text-primary">{progresoActual.promedio_ponderado_acumulado}</div>
-                  <div className="text-sm text-gray-500 mt-1">Promedio ponderado</div>
+                <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                  <div className="text-4xl font-black text-primary">{progresoActual.promedio_ponderado_acumulado}</div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Promedio Ponderado Acumulado</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl font-bold text-primary">{progresoActual.estado_permanencia_id}</div>
-                  <div className="text-sm text-gray-500 mt-1">Estado permanencia</div>
+                <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                  <div className="text-4xl font-black text-primary">{progresoActual.estado_permanencia_id}</div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Estado de Permanencia</div>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-            <div className="px-4 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Historial de notas</h3>
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+              <h3 className="text-lg font-bold text-gray-900">Historial de Calificaciones por Semestre</h3>
             </div>
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Semestre</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Curso</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nota parcial</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nota final</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
+                  <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
+                  <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Semestre</th>
+                  <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Curso / Asignatura</th>
+                  <th className="text-center px-4 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider w-32">Parcial</th>
+                  <th className="text-center px-4 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider w-32">Final</th>
+                  <th className="text-center px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Estado</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {historial.length > 0 ? historial.map((item, index) => (
-                  <tr key={`${item.periodo_academico_id}-${index}`} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-600">{item.periodo_academico_nombre}</td>
-                    <td className="px-4 py-3 text-gray-600">{item.semestre_codigo}</td>
-                    <td className="px-4 py-3 text-gray-900 font-medium">{item.curso_nombre || "-"}</td>
-                    <td className="px-4 py-3 text-gray-600">{item.nota_parcial ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">{item.nota_final ?? "—"}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                  <tr key={`${item.periodo_academico_id}-${index}`} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 text-gray-600 font-medium">{item.periodo_academico_nombre}</td>
+                    <td className="px-6 py-4 text-gray-600">{item.semestre_codigo}</td>
+                    <td className="px-6 py-4 text-gray-900 font-bold">{item.curso_nombre || "—"}</td>
+                    <td className="px-4 py-4 text-center font-bold text-gray-700 text-lg">{item.nota_parcial ?? "—"}</td>
+                    <td className="px-4 py-4 text-center font-bold text-gray-700 text-lg">{item.nota_final ?? "—"}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
                         item.estado_nombre === "Aprobado" ? "bg-green-50 text-green-700 border-green-200"
                         : item.estado_nombre === "Desaprobado" ? "bg-red-50 text-red-700 border-red-200"
                         : "bg-gray-50 text-gray-600 border-gray-200"
@@ -103,7 +103,7 @@ export default function NotasMiHoja() {
                     </td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500">No hay registros de notas para mostrar.</td></tr>
+                  <tr><td colSpan={6} className="px-6 py-8 text-center text-sm text-gray-500">No hay registros de notas para mostrar.</td></tr>
                 )}
               </tbody>
             </table>
@@ -112,8 +112,8 @@ export default function NotasMiHoja() {
       )}
 
       {!cargando && !error && historial.length === 0 && !progresoActual && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <p className="text-sm text-gray-500">No se encontro informacion academica para este usuario. Si eres estudiante, revisa que tu cuenta tenga historial semilla cargado.</p>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm text-center">
+          <p className="text-base text-gray-500">No se encontró historial académico registrado para su código de estudiante.</p>
         </div>
       )}
     </div>

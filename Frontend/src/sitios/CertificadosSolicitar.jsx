@@ -3,9 +3,9 @@ import { solicitarCertificado } from "../servicios/certificados.servicio";
 
 const TIPOS_CERTIFICADO = [
   "Constancia de estudios",
-  "Constancia de matricula",
+  "Constancia de matrícula",
   "Certificado de notas",
-  "Record academico",
+  "Récord académico",
   "Constancia de egreso",
 ];
 
@@ -32,39 +32,40 @@ export default function CertificadosSolicitar() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Solicitar certificado</h2>
-        <p className="text-sm text-gray-500 mt-1">Selecciona el documento que necesitas y genera tu solicitud formal.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Trámite y Solicitud de Certificados</h2>
+        <p className="text-base text-gray-500 mt-1">Plataforma digital para la solicitud formal de constancias de estudio, matrícula, egreso y récords meritocráticos.</p>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Nueva solicitud</h3>
-        <form onSubmit={manejarEnvio}>
-          <div className="mb-4">
-            <label>Tipo de documento</label>
-            <select value={tipo} onChange={(e) => setTipo(e.target.value)} required>
+      <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Nueva Solicitud de Documento</h3>
+        <form onSubmit={manejarEnvio} className="flex flex-col sm:flex-row gap-6 items-end">
+          <div className="w-full sm:flex-1">
+            <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Tipo de Certificado / Constancia</label>
+            <select value={tipo} onChange={(e) => setTipo(e.target.value)} required className="bg-white border-gray-300 w-full font-semibold">
               {TIPOS_CERTIFICADO.map((opcion) => (
                 <option key={opcion} value={opcion}>{opcion}</option>
               ))}
             </select>
           </div>
           <button type="submit" disabled={enviando}
-            className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors cursor-pointer">
-            {enviando ? "Enviando..." : "Solicitar"}
+            className="w-full sm:w-auto px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+          >
+            {enviando ? "Procesando..." : "Generar Solicitud"}
           </button>
         </form>
       </div>
 
       {error && !esErrorDeuda && (
-        <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 font-semibold text-sm rounded-xl shadow-sm">⚠ {error}</div>
       )}
 
       {error && esErrorDeuda && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8 border-l-4 border-l-red-600">
-          <h3 className="text-lg font-semibold text-red-600 mb-2">Deuda pendiente</h3>
-          <p className="text-sm text-gray-700 mb-4">{error.error}</p>
-          <div className="bg-red-50 rounded-lg p-4 text-sm">
-            <strong className="block mb-2 text-red-800">Pasos para regularizar:</strong>
-            <ol className="m-0 pl-5 space-y-1 text-gray-700">
+        <div className="bg-white rounded-xl border border-gray-250 p-8 mb-8 border-l-4 border-l-red-600 shadow-sm">
+          <h3 className="text-lg font-bold text-red-700 mb-2 flex items-center gap-2">⚠ Restricción por Deuda Pendiente</h3>
+          <p className="text-sm text-gray-700 mb-4 font-medium">{error.error || "Debe regularizar sus pagos para solicitar este documento."}</p>
+          <div className="bg-red-50/50 rounded-xl p-6 border border-red-200">
+            <strong className="block mb-3 text-red-800 text-sm font-bold uppercase tracking-wider">Pasos para Regularización de Pagos:</strong>
+            <ol className="m-0 pl-5 space-y-2 text-gray-750 text-sm font-medium">
               {error.pasos_pago?.map((paso, i) => (
                 <li key={i}>{paso.replace(/^\d+\.\s*/, "")}</li>
               ))}
@@ -74,31 +75,33 @@ export default function CertificadosSolicitar() {
       )}
 
       {respuesta && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8 border-l-4 border-l-green-500">
-          <h3 className="text-lg font-semibold text-green-700 mb-4">Solicitud registrada</h3>
-          <table className="w-full text-sm mb-4">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">N° Solicitud</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Tipo</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Fecha</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              <tr className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-bold text-gray-900">{respuesta.id}</td>
-                <td className="px-4 py-3 text-gray-600">{respuesta.tipo}</td>
-                <td className="px-4 py-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">{respuesta.estado}</span>
-                </td>
-                <td className="px-4 py-3 text-gray-600">{respuesta.fecha_solicitud}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="bg-green-50 rounded-lg p-4 text-sm">
-            <strong className="block mb-2 text-green-800">Pasos siguientes:</strong>
-            <ol className="m-0 pl-5 space-y-1 text-gray-700">
+        <div className="bg-white rounded-xl border border-gray-250 p-8 mb-8 border-l-4 border-l-green-500 shadow-sm">
+          <h3 className="text-lg font-bold text-green-700 mb-4">✓ Solicitud de Trámite Registrada</h3>
+          <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm mb-6">
+            <table className="w-full text-base">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="text-left px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">N° Trámite</th>
+                  <th className="text-left px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">Documento</th>
+                  <th className="text-center px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Estado</th>
+                  <th className="text-left px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">Fecha Solicitud</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <tr className="hover:bg-gray-50/50">
+                  <td className="px-6 py-4 font-black text-gray-900"># {respuesta.id}</td>
+                  <td className="px-6 py-4 text-gray-800 font-bold">{respuesta.tipo}</td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-700 border border-yellow-200">{respuesta.estado}</span>
+                  </td>
+                  <td className="px-6 py-4 text-gray-600 font-medium">{respuesta.fecha_solicitud}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="bg-green-50/50 rounded-xl p-6 border border-green-200">
+            <strong className="block mb-3 text-green-800 text-sm font-bold uppercase tracking-wider font-extrabold">Pasos Siguientes para el Trámite:</strong>
+            <ol className="m-0 pl-5 space-y-2 text-gray-750 text-sm font-medium">
               {respuesta.pasos_siguientes?.map((paso, i) => (
                 <li key={i}>{paso.replace(/^\d+\.\s*/, "")}</li>
               ))}
