@@ -129,13 +129,13 @@ const MENU_POR_ROL = {
     { label: "Seguridad de Usuarios", to: "/administracion/usuarios" },
   ],
   direccion: [
-    { label: "Inicio", to: "/" },
-    { label: "Estadísticas", to: "/matricula/estadisticas" },
-    { label: "Carga docente", to: "/cursos-docentes/carga-docente" },
-    { label: "Gestionar notas", to: "/notas/gestionar" },
-    { label: "Certificados", to: "/certificados/listar" },
-    { label: "Reportes", to: "/record-academico/reportes" },
-    { label: "Auditorías", to: "/administracion/auditorias" },
+    { label: "Dashboard Directivo", to: "/" },
+    { label: "Métricas de Ingreso", to: "/matricula/estadisticas" },
+    { label: "Cumplimiento Docente", to: "/cursos-docentes/carga-docente" },
+    { label: "Supervisión de Promedios", to: "/notas/gestionar" },
+    { label: "Autorización Oficial", to: "/certificados/listar" },
+    { label: "Desempeño de Cohortes", to: "/record-academico/reportes" },
+    { label: "Logs del Sistema", to: "/administracion/auditorias" },
   ],
 };
 
