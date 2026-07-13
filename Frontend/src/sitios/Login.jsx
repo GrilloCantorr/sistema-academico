@@ -142,7 +142,7 @@ const S = {
     width: "100%",
     padding: "14px",
     marginTop: "8px",
-    backgroundColor: "#059669",
+    backgroundColor: "#be123c",
     color: "#ffffff",
     border: "none",
     borderRadius: "10px",
@@ -152,7 +152,7 @@ const S = {
     fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
     letterSpacing: "-0.01em",
     transition: "background-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease",
-    boxShadow: "0 4px 14px rgba(5,150,105,0.30)",
+    boxShadow: "0 4px 14px rgba(190,18,60,0.25)",
   },
   btnSubmitDisabled: {
     backgroundColor: "#d1d5db",
@@ -199,29 +199,16 @@ export default function Login() {
   }
 
   const inputFocusStyle = {
-    borderColor: "#059669",
-    boxShadow: "0 0 0 3px rgba(5,150,105,0.12)",
+    borderColor: "#be123c",
+    boxShadow: "0 0 0 3px rgba(190,18,60,0.12)",
   };
 
   return (
     <div style={{
       ...S.page,
-      position: "relative",
-      backgroundImage: "url('/uncp.jpg')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
+      background: "radial-gradient(circle, #4c0519 0%, #1c1917 100%)",
     }}>
-      {/* Overlay azul oscuro */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        backgroundColor: "rgba(15, 23, 42, 0.75)",
-        backdropFilter: "saturate(1.3)",
-      }} />
-
-      {/* Contenido sobre el overlay */}
-      <div style={{ position: "relative", zIndex: 1, width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <div style={S.card}>
 
         {/* Encabezado */}
@@ -300,16 +287,16 @@ export default function Login() {
             }}
             onMouseEnter={(e) => {
               if (!cargando) {
-                e.currentTarget.style.backgroundColor = "#047857";
+                e.currentTarget.style.backgroundColor = "#9f1239";
                 e.currentTarget.style.transform = "translateY(-1px)";
-                e.currentTarget.style.boxShadow = "0 6px 18px rgba(5,150,105,0.38)";
+                e.currentTarget.style.boxShadow = "0 6px 18px rgba(190,18,60,0.35)";
               }
             }}
             onMouseLeave={(e) => {
               if (!cargando) {
-                e.currentTarget.style.backgroundColor = "#059669";
+                e.currentTarget.style.backgroundColor = "#be123c";
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 14px rgba(5,150,105,0.30)";
+                e.currentTarget.style.boxShadow = "0 4px 14px rgba(190,18,60,0.25)";
               }
             }}
           >
@@ -320,7 +307,7 @@ export default function Login() {
         {/* Error */}
         {error && <div style={S.errorBox}>⚠ {error}</div>}
       </div>
-      </div>  {/* cierre wrapper z-index */}
+      </div>
     </div>
   );
 }

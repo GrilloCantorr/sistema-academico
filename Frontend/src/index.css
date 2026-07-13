@@ -3,11 +3,11 @@
 
 
 @theme {
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-light: #e0e7ff;
-  --color-primary-dark: #3730a3;
-  --sidebar-width: 270px;
+  --color-primary: #be123c;
+  --color-primary-hover: #9f1239;
+  --color-primary-light: #ffe4e6;
+  --color-primary-dark: #881337;
+  --sidebar-width: 280px;
 }
 
 body {
