@@ -147,7 +147,7 @@ const S = {
     left: 0,
     bottom: 0,
     width: "var(--sidebar-width, 280px)", // Agrandamos la barra de 260px a 280px
-    backgroundColor: "#0F172A",
+    backgroundColor: "#27040c",
     display: "flex",
     flexDirection: "column",
     zIndex: 50,
