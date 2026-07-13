@@ -33,3 +33,38 @@ label {
 ::-webkit-scrollbar-track { background: #f3f4f6; }
 ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Estilos de Impresión Profesional */
+@media print {
+  aside, button, select, input, .no-print, nav, header {
+    display: none !important;
+  }
+  
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid !important;
+  }
+
+  .shadow-sm, .shadow-md, .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  .border, .border-gray-200 {
+    border: 1px solid #d1d5db !important;
+  }
+}

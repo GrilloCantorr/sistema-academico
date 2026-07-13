@@ -76,7 +76,21 @@ export default function CertificadosSolicitar() {
 
       {respuesta && (
         <div className="bg-white rounded-xl border border-gray-250 p-8 mb-8 border-l-4 border-l-green-500 shadow-sm">
-          <h3 className="text-lg font-bold text-green-700 mb-4">✓ Solicitud de Trámite Registrada</h3>
+          <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
+            <h3 className="text-lg font-bold text-green-700">✓ Solicitud de Trámite Registrada</h3>
+            <button
+              onClick={() => window.print()}
+              type="button"
+              className="px-4 py-2 bg-white text-gray-750 border border-gray-350 rounded-lg text-sm font-bold hover:bg-gray-50 flex items-center gap-2 cursor-pointer shadow-sm no-print"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Imprimir Trámite
+            </button>
+          </div>
           <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm mb-6">
             <table className="w-full text-base">
               <thead>

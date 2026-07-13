@@ -80,16 +80,30 @@ export default function CertificadosListar() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Certificados y documentos</h2>
-        <p className="text-sm text-gray-500 mt-1">Revisa las solicitudes, autoriza, genera los PDF oficiales y verifica documentos.</p>
+      <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Autorización y Emisión de Certificados</h2>
+          <p className="text-base text-gray-500 mt-2">Revisión de solicitudes de constancias académicas, firmas oficiales y verificación mediante código QR.</p>
+        </div>
+        <button
+          onClick={() => window.print()}
+          type="button"
+          className="px-5 py-2.5 bg-white text-gray-750 border border-gray-350 rounded-lg text-sm font-bold hover:bg-gray-50 flex items-center gap-2 cursor-pointer shadow-sm no-print"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Imprimir Reporte
+        </button>
       </div>
 
       {mensaje && <div className="mb-6 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">{mensaje}</div>}
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Verificar certificado</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm no-print">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Verificar certificado</h3>
         <form onSubmit={manejarVerificacion}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div className="md:col-span-2">
@@ -110,13 +124,13 @@ export default function CertificadosListar() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-        <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Solicitudes</h3>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between flex-wrap gap-4">
+          <h3 className="text-lg font-bold text-gray-900">Solicitudes y Tickets</h3>
           <div className="flex gap-2">
             {ESTADOS.map((op) => (
               <button key={op} onClick={() => setFiltro(op)}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer ${
                   filtro === op ? "bg-primary text-white border-primary" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                 }`}>
                 {op === "todos" ? "Todos" : op}
@@ -126,49 +140,49 @@ export default function CertificadosListar() {
         </div>
 
         {cargando ? (
-          <p className="text-sm text-gray-500 p-4">Cargando certificados...</p>
+          <p className="text-sm text-gray-500 p-8 text-center">Cargando certificados...</p>
         ) : filtrados.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center py-8">
-            No hay certificados{filtro !== "todos" ? ` en estado "${filtro}"` : ""}.
+          <p className="text-sm text-gray-500 text-center py-12">
+            No se registran certificados{filtro !== "todos" ? ` en estado "${filtro}"` : ""}.
           </p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-base">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">#</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estudiante</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Tipo</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Acciones</th>
+                <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Ticket</th>
+                <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Estudiante</th>
+                <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Tipo Documento</th>
+                <th className="text-left px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Fecha Solicitud</th>
+                <th className="text-center px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider w-36">Estado</th>
+                <th className="text-center px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider w-44">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 bg-white">
               {filtrados.map((c) => (
-                <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-900 font-medium">{c.id}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.estudiante_nombre || c.estudiante_id}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.tipo}</td>
-                  <td className="px-4 py-3 text-xs text-gray-500">{c.fecha_creacion || "—"}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                <tr key={c.id} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4 text-gray-900 font-black"># {c.id}</td>
+                  <td className="px-6 py-4 text-gray-900 font-bold">{c.estudiante_nombre || c.estudiante_id}</td>
+                  <td className="px-6 py-4 text-gray-800 font-semibold">{c.tipo}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600 font-medium">{c.fecha_creacion || "—"}</td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
                       c.estado === "Pendiente" ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                       : c.estado === "Autorizado" ? "bg-blue-50 text-blue-700 border-blue-200"
                       : c.estado === "Emitido" ? "bg-green-50 text-green-700 border-green-200"
                       : "bg-gray-50 text-gray-600 border-gray-200"
                     }`}>{c.estado}</span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1.5 flex-wrap">
+                  <td className="px-6 py-4 text-center">
+                    <div className="flex gap-2 justify-center flex-wrap">
                       {usuario?.rol === "direccion" && c.estado === "Pendiente" && (
                         <button onClick={() => manejarAutorizar(c.id)}
-                          className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors cursor-pointer">
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors cursor-pointer shadow-sm">
                           Autorizar
                         </button>
                       )}
                       {usuario?.rol === "administrador" && c.estado === "Autorizado" && (
                         <button onClick={() => manejarGenerar(c.id)} disabled={generando === c.id}
-                          className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors cursor-pointer">
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors cursor-pointer shadow-sm">
                           {generando === c.id ? "Generando..." : "Generar PDF"}
                         </button>
                       )}
@@ -188,8 +202,8 @@ export default function CertificadosListar() {
       </div>
 
       {certificados.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Flujo de generacion</h3>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm no-print">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Flujo de generación</h3>
           <div className="flex items-center gap-2 justify-center py-4 flex-wrap">
             {[
               { label: "Solicitado", cls: "bg-yellow-50 text-yellow-700 border-yellow-200" },

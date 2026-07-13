@@ -22,9 +22,23 @@ export default function RecordMiHistorial() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mi Historial Curricular</h2>
-        <p className="text-base text-gray-500 mt-1">Avance curricular general, promedio ponderado acumulado y consolidado de méritos por ciclo.</p>
+      <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Mi Historial Curricular</h2>
+          <p className="text-base text-gray-500 mt-1">Avance curricular general, promedio ponderado acumulado y consolidado de méritos por ciclo.</p>
+        </div>
+        <button
+          onClick={() => window.print()}
+          type="button"
+          className="px-5 py-2.5 bg-white text-gray-750 border border-gray-350 rounded-lg text-sm font-bold hover:bg-gray-50 flex items-center gap-2 cursor-pointer shadow-sm no-print"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Imprimir Historial
+        </button>
       </div>
 
       {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl">⚠ {error}</div>}
