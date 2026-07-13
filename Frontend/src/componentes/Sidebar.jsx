@@ -133,6 +133,7 @@ const MENU_POR_ROL = {
     { label: "Estadísticas", to: "/matricula/estadisticas" },
     { label: "Carga docente", to: "/cursos-docentes/carga-docente" },
     { label: "Gestionar notas", to: "/notas/gestionar" },
+    { label: "Certificados", to: "/certificados/listar" },
     { label: "Reportes", to: "/record-academico/reportes" },
     { label: "Auditorías", to: "/administracion/auditorias" },
   ],
