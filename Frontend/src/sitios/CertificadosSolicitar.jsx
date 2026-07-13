@@ -2,15 +2,15 @@ import { useState } from "react";
 import { solicitarCertificado } from "../servicios/certificados.servicio";
 
 const TIPOS_CERTIFICADO = [
-  "Constancia de estudios",
-  "Constancia de matrícula",
-  "Certificado de notas",
-  "Récord académico",
-  "Constancia de egreso",
+  { value: "Constancia de estudios", label: "Constancia de estudios" },
+  { value: "Constancia de matricula", label: "Constancia de matrícula" },
+  { value: "Certificado de notas", label: "Certificado de notas" },
+  { value: "Record academico", label: "Récord académico" },
+  { value: "Constancia de egreso", label: "Constancia de egreso" },
 ];
 
 export default function CertificadosSolicitar() {
-  const [tipo, setTipo] = useState(TIPOS_CERTIFICADO[0]);
+  const [tipo, setTipo] = useState(TIPOS_CERTIFICADO[0].value);
   const [respuesta, setRespuesta] = useState(null);
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -24,7 +24,7 @@ export default function CertificadosSolicitar() {
     setEnviando(false);
     if (error) { setError(error); return; }
     setRespuesta(data);
-    setTipo(TIPOS_CERTIFICADO[0]);
+    setTipo(TIPOS_CERTIFICADO[0].value);
   }
 
   const esErrorDeuda = error?.codigo === "DEUDA_PENDIENTE";
@@ -42,8 +42,8 @@ export default function CertificadosSolicitar() {
           <div className="w-full sm:flex-1">
             <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Tipo de Certificado / Constancia</label>
             <select value={tipo} onChange={(e) => setTipo(e.target.value)} required className="bg-white border-gray-300 w-full font-semibold">
-              {TIPOS_CERTIFICADO.map((opcion) => (
-                <option key={opcion} value={opcion}>{opcion}</option>
+              {TIPOS_CERTIFICADO.map((op) => (
+                <option key={op.value} value={op.value}>{op.label}</option>
               ))}
             </select>
           </div>
