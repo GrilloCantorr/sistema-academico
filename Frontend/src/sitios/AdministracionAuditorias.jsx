@@ -73,14 +73,14 @@ export default function AdministracionAuditorias() {
 
   return (
     <div>
-      <div className="mb-8 flex justify-between items-center">
+      <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Auditorias y reportes estrategicos</h2>
-          <p className="text-sm text-gray-500 mt-1">Consulta los eventos de administracion y el resumen institucional.</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Logs del Sistema</h2>
+          <p className="text-base text-gray-500 mt-2">Bitácora oficial de auditoría académica y consolidado estratégico de control institucional.</p>
         </div>
         <button 
           onClick={manejarExportar}
-          className="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+          className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
         >
           Exportar Logs (.txt)
         </button>
@@ -89,36 +89,36 @@ export default function AdministracionAuditorias() {
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
 
       {reportes && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen estrategico</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.poblacion.total_estudiantes}</div>
-              <div className="text-xs text-gray-500 mt-1">Estudiantes</div>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Resumen de Control Estratégico</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-primary">{reportes.poblacion.total_estudiantes}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Estudiantes</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.poblacion.total_docentes}</div>
-              <div className="text-xs text-gray-500 mt-1">Docentes</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-primary">{reportes.poblacion.total_docentes}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Docentes</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.matricula.total_solicitudes}</div>
-              <div className="text-xs text-gray-500 mt-1">Matriculas</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-primary">{reportes.matricula.total_solicitudes}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Matrículas</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.matricula.confirmadas}</div>
-              <div className="text-xs text-gray-500 mt-1">Confirmadas</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-green-600">{reportes.matricula.confirmadas}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Confirmadas</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.academico.promedio_institucional ?? "—"}</div>
-              <div className="text-xs text-gray-500 mt-1">Promedio institucional</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-primary">{reportes.academico.promedio_institucional ?? "—"}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Promedio Gral.</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.certificados.emitidos}</div>
-              <div className="text-xs text-gray-500 mt-1">Cert. emitidos</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-blue-600">{reportes.certificados.emitidos}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Cert. Emitidos</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{reportes.certificados.pendientes}</div>
-              <div className="text-xs text-gray-500 mt-1">Cert. pendientes</div>
+            <div className="bg-slate-50 rounded-xl p-5 text-center border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-yellow-600">{reportes.certificados.pendientes}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Cert. Pendientes</div>
             </div>
           </div>
         </div>

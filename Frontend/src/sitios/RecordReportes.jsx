@@ -57,8 +57,8 @@ export default function RecordReportes() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Reportes academicos</h2>
-        <p className="text-sm text-gray-500 mt-1">Consulta el resumen institucional y el kardex detallado de cualquier estudiante.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Desempeño de Cohortes</h2>
+        <p className="text-base text-gray-500 mt-2">Análisis de rendimiento por especialidad y reportes académicos consolidados.</p>
       </div>
 
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
@@ -213,43 +213,43 @@ export default function RecordReportes() {
       {!cargando && !kardex && (
         <>
           {resumen && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-gray-50 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-primary">{resumen.total_estudiantes}</div>
-                <div className="text-sm text-gray-500 mt-1">Total estudiantes</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                <div className="text-4xl font-black text-primary">{resumen.total_estudiantes}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Total Estudiantes</div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-primary">{resumen.estudiantes_con_registro_de_progreso}</div>
-                <div className="text-sm text-gray-500 mt-1">Con progreso</div>
+              <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                <div className="text-4xl font-black text-primary">{resumen.estudiantes_con_registro_de_progreso}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Estudiantes con Registro</div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-primary">{resumen.promedio_general_institucional ?? "—"}</div>
-                <div className="text-sm text-gray-500 mt-1">Promedio institucional</div>
+              <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200 shadow-sm">
+                <div className="text-4xl font-black text-primary">{resumen.promedio_general_institucional ?? "—"}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Promedio Institucional</div>
               </div>
             </div>
           )}
 
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-            <div className="px-4 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Desempeno por cohorte</h3>
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+              <h3 className="text-lg font-bold text-gray-900">Rendimiento Promedio por Especialidad</h3>
             </div>
             {cohortes.length === 0 ? (
               <p className="text-sm text-gray-500 text-center py-8">No hay datos de cohorte disponibles.</p>
             ) : (
-              <table className="w-full text-sm">
+              <table className="w-full text-base">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Especialidad</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Total estudiantes</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Promedio ponderado</th>
+                    <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Especialidad Académica</th>
+                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Matriculados</th>
+                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Promedio Ponderado General</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {cohortes.map((item) => (
-                    <tr key={item.especialidad_id ?? "sin-especialidad"} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-gray-900 font-medium">{item.especialidad_nombre || `Especialidad #${item.especialidad_id}`}</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{item.total_estudiantes}</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{item.promedio_ponderado}</td>
+                    <tr key={item.especialidad_id ?? "sin-especialidad"} className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 text-gray-900 font-semibold">{item.especialidad_nombre || `Especialidad #${item.especialidad_id}`}</td>
+                      <td className="px-6 py-4 text-center text-gray-600 font-medium">{item.total_estudiantes}</td>
+                      <td className="px-6 py-4 text-center text-gray-900 font-black text-lg">{item.promedio_ponderado}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -64,42 +64,42 @@ export default function NotasGestion() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Gestion de notas</h2>
-        <p className="text-sm text-gray-500 mt-1">Revisa el consolidado de notas, consulta indicadores y administra actas.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Supervisión de Calificaciones</h2>
+        <p className="text-base text-gray-500 mt-2">Monitoreo general de actas académicas, indicadores consolidados de rendimiento y consulta de matrículas.</p>
       </div>
 
       {mensaje && <div className="mb-6 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">{mensaje}</div>}
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Acciones</h3>
-          <div className="flex gap-2 flex-wrap">
+        <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Acciones de Control</h3>
+          <div className="flex gap-3 flex-wrap">
             {usuario?.rol === "administrador" && (
               <button type="button" onClick={manejarValidarActas} disabled={cargandoActas}
-                className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors cursor-pointer">
-                {cargandoActas ? "Cargando..." : "Validar actas"}
+                className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors cursor-pointer shadow-sm">
+                {cargandoActas ? "Cargando..." : "Validar Actas Oficiales"}
               </button>
             )}
             {(usuario?.rol === "administrador" || usuario?.rol === "direccion") && (
               <button type="button" onClick={manejarIndicadores}
-                className="px-4 py-2 bg-white text-gray-700 text-sm font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer">
-                Ver indicadores
+                className="px-5 py-2.5 bg-white text-gray-700 text-sm font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
+                Ver Indicadores de Rendimiento
               </button>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Consultar matricula</h3>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Consultar Notas por Matrícula</h3>
           <form onSubmit={manejarConsulta}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div className="md:col-span-2">
-                <label>ID de matricula</label>
-                <input type="number" value={matriculaId} onChange={(e) => setMatriculaId(e.target.value)} required />
+                <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">ID de Matrícula</label>
+                <input type="number" value={matriculaId} onChange={(e) => setMatriculaId(e.target.value)} placeholder="Ej. 1" required />
               </div>
               <div>
-                <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors cursor-pointer">Consultar</button>
+                <button type="submit" className="w-full px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors cursor-pointer shadow-sm">Consultar</button>
               </div>
             </div>
           </form>
@@ -107,32 +107,32 @@ export default function NotasGestion() {
       </div>
 
       {indicadores && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Indicadores academicos</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-primary">{indicadores.promedio_general ?? "—"}</div>
-              <div className="text-sm text-gray-500 mt-1">Promedio general</div>
+        <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Indicadores Académicos Generales</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200">
+              <div className="text-4xl font-black text-primary">{indicadores.promedio_general ?? "—"}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Promedio General</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-primary">{indicadores.aprobados}</div>
-              <div className="text-sm text-gray-500 mt-1">Aprobados</div>
+            <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200">
+              <div className="text-4xl font-black text-green-600">{indicadores.aprobados}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Aprobados</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-primary">{indicadores.reprobados}</div>
-              <div className="text-sm text-gray-500 mt-1">Reprobados</div>
+            <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200">
+              <div className="text-4xl font-black text-red-600">{indicadores.reprobados}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Reprobados</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-primary">{indicadores.total_evaluados}</div>
-              <div className="text-sm text-gray-500 mt-1">Total evaluados</div>
+            <div className="bg-slate-50 rounded-xl p-6 text-center border border-gray-200">
+              <div className="text-4xl font-black text-gray-700">{indicadores.total_evaluados}</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Total Evaluados</div>
             </div>
           </div>
         </div>
       )}
 
       {actas && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
-          <div className="px-4 py-3 border-b border-gray-200">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8 shadow-sm">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
             <h3 className="text-lg font-semibold text-gray-900">Validacion de actas ({actas.items?.length || 0} ofertas)</h3>
           </div>
           <table className="w-full text-sm">

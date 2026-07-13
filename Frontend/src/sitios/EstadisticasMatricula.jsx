@@ -19,44 +19,81 @@ export default function EstadisticasMatricula() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Estadisticas de matricula</h2>
-        <p className="text-sm text-gray-500 mt-1">Resumen de solicitudes por estado.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Métricas de Ingreso</h2>
+        <p className="text-base text-gray-500 mt-2">Monitoreo estratégico y consolidado de solicitudes de matrícula por estado.</p>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
         {cargando ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-24" />
+              <div key={i} className="animate-pulse bg-gray-100 rounded-xl h-32" />
             ))}
           </div>
         ) : !estadisticas ? (
           <p className="text-sm text-gray-500">{error || "No hay datos disponibles."}</p>
         ) : (
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="text-3xl font-bold text-gray-900">{estadisticas.total_solicitudes}</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Total solicitudes</div>
+            {/* Tarjetas estadísticas grandes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="text-center p-6 bg-slate-50 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="text-4xl font-black text-primary">{estadisticas.total_solicitudes}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Total Solicitudes</div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="text-3xl font-bold text-gray-900">{estadisticas.matriculados}</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Matriculados</div>
+              <div className="text-center p-6 bg-slate-50 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="text-4xl font-black text-green-600">{estadisticas.matriculados}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Matriculados</div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="text-3xl font-bold text-gray-900">{estadisticas.pendientes}</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Pendientes</div>
+              <div className="text-center p-6 bg-slate-50 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="text-4xl font-black text-yellow-600">{estadisticas.pendientes}</div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-3">Pendientes</div>
               </div>
             </div>
-            {estadisticas.validados > 0 && (
-              <div className="mt-4 text-center">
-                <span className="text-sm text-gray-500">Validados: </span>
-                <span className="text-lg font-bold text-gray-900">{estadisticas.validados}</span>
+
+            {/* Tabla consolidada con porcentajes */}
+            <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+                <h3 className="text-lg font-bold text-gray-900">Consolidado del Estado de Matrículas</h3>
               </div>
-            )}
-            <div className="mt-4 text-right">
-              <button onClick={cargar} className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-                Actualizar
+              <table className="w-full text-base">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Estado Académico</th>
+                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Alumnos</th>
+                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr className="hover:bg-gray-50/50">
+                    <td className="px-6 py-4 text-gray-900 font-semibold">Confirmados / Matriculados</td>
+                    <td className="px-6 py-4 text-center font-extrabold text-gray-700">{estadisticas.matriculados}</td>
+                    <td className="px-6 py-4 text-center font-medium text-green-600">
+                      {estadisticas.total_solicitudes ? ((estadisticas.matriculados / estadisticas.total_solicitudes) * 100).toFixed(1) : 0}%
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50/50">
+                    <td className="px-6 py-4 text-gray-900 font-semibold">Pendientes de Pago/Validación</td>
+                    <td className="px-6 py-4 text-center font-extrabold text-gray-700">{estadisticas.pendientes}</td>
+                    <td className="px-6 py-4 text-center font-medium text-yellow-600">
+                      {estadisticas.total_solicitudes ? ((estadisticas.pendientes / estadisticas.total_solicitudes) * 100).toFixed(1) : 0}%
+                    </td>
+                  </tr>
+                  {estadisticas.validados > 0 && (
+                    <tr className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 text-gray-900 font-semibold">Validados sin Pago</td>
+                      <td className="px-6 py-4 text-center font-extrabold text-gray-700">{estadisticas.validados}</td>
+                      <td className="px-6 py-4 text-center font-medium text-blue-600">
+                        {estadisticas.total_solicitudes ? ((estadisticas.validados / estadisticas.total_solicitudes) * 100).toFixed(1) : 0}%
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button onClick={cargar} className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm cursor-pointer">
+                Actualizar Datos
               </button>
             </div>
           </div>
