@@ -115,9 +115,9 @@ const MENU_POR_ROL = {
     { label: "Gestión de Trámites", to: "/certificados/solicitar" },
   ],
   docente: [
-    { label: "Inicio", to: "/" },
-    { label: "Mis cursos", to: "/cursos-docentes/mis-cursos" },
-    { label: "Registrar notas", to: "/notas/registrar" },
+    { label: "Consola Docente", to: "/" },
+    { label: "Asignaturas a Cargo", to: "/cursos-docentes/mis-cursos" },
+    { label: "Evaluaciones", to: "/notas/registrar" },
   ],
   administrador: [
     { label: "Inicio", to: "/" },
