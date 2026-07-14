@@ -4,7 +4,7 @@ export async function peticion(ruta, opciones = {}) {
   const token = localStorage.getItem("token");
 
   const headers = {
-    "Content-Type": "application/json",
+    ...(opciones.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...opciones.headers,
   };

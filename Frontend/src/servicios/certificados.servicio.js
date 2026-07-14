@@ -6,10 +6,10 @@ export async function listarSolicitudes() {
   return peticion("/certificados/bandeja");
 }
 
-export async function solicitarCertificado(datos) {
+export async function solicitarCertificado(formData) {
   return peticion("/certificados/solicitar", {
     method: "POST",
-    body: JSON.stringify(datos),
+    body: formData,
   });
 }
 

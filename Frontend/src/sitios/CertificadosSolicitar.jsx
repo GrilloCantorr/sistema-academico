@@ -11,20 +11,33 @@ const TIPOS_CERTIFICADO = [
 
 export default function CertificadosSolicitar() {
   const [tipo, setTipo] = useState(TIPOS_CERTIFICADO[0].value);
+  const [comprobante, setComprobante] = useState(null);
   const [respuesta, setRespuesta] = useState(null);
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
   async function manejarEnvio(evento) {
     evento.preventDefault();
+    if (!comprobante) {
+      setError("Debes adjuntar el sustento de pago");
+      return;
+    }
     setRespuesta(null);
     setError(null);
     setEnviando(true);
-    const { data, error } = await solicitarCertificado({ tipo });
+
+    const formData = new FormData();
+    formData.append("tipo", tipo);
+    formData.append("comprobante", comprobante);
+
+    const { data, error } = await solicitarCertificado(formData);
     setEnviando(false);
     if (error) { setError(error); return; }
     setRespuesta(data);
     setTipo(TIPOS_CERTIFICADO[0].value);
+    setComprobante(null);
+    const fileInput = document.getElementById("comprobante-input");
+    if (fileInput) fileInput.value = "";
   }
 
   const esErrorDeuda = error?.codigo === "DEUDA_PENDIENTE";
@@ -38,8 +51,8 @@ export default function CertificadosSolicitar() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-sm">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Nueva Solicitud de Documento</h3>
-        <form onSubmit={manejarEnvio} className="flex flex-col sm:flex-row gap-6 items-end">
-          <div className="w-full sm:flex-1">
+        <form onSubmit={manejarEnvio} className="flex flex-col md:flex-row gap-6 items-end">
+          <div className="w-full md:flex-1">
             <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Tipo de Certificado / Constancia</label>
             <select value={tipo} onChange={(e) => setTipo(e.target.value)} required className="bg-white border-gray-300 w-full font-semibold">
               {TIPOS_CERTIFICADO.map((op) => (
@@ -47,8 +60,19 @@ export default function CertificadosSolicitar() {
               ))}
             </select>
           </div>
+          <div className="w-full md:flex-1">
+            <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Sustento de Pago (PDF, JPG, PNG)</label>
+            <input 
+              id="comprobante-input"
+              type="file" 
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => setComprobante(e.target.files[0])} 
+              required 
+              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white outline-none cursor-pointer"
+            />
+          </div>
           <button type="submit" disabled={enviando}
-            className="w-full sm:w-auto px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+            className="w-full md:w-auto px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
           >
             {enviando ? "Procesando..." : "Generar Solicitud"}
           </button>
