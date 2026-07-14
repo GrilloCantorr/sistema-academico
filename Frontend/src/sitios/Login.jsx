@@ -229,9 +229,6 @@ export default function Login() {
             Sistema <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-rose-500 to-indigo-400">Académico</span>
           </h1>
-          <p className="text-lg lg:text-xl text-gray-300 font-medium leading-relaxed max-w-lg">
-            Plataforma institucional de control curricular, evaluación docente y servicios digitales para toda la comunidad académica.
-          </p>
         </div>
 
         {/* Footer del panel decorativo */}
@@ -263,7 +260,7 @@ export default function Login() {
             <div className="mb-5">
               <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest" htmlFor="login-username">Usuario</label>
               <div className="relative flex items-center">
-                <span className="absolute left-4 text-gray-400 pointer-events-none"><IconUser /></span>
+                <span className="absolute left-4 text-gray-400 pointer-events-none" style={{ top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center" }}><IconUser /></span>
                 <input
                   id="login-username"
                   type="text"
@@ -272,7 +269,8 @@ export default function Login() {
                   placeholder="Ingrese su usuario"
                   required
                   autoComplete="username"
-                  className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-sm outline-none transition bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  style={{ paddingLeft: "44px" }}
+                  className="w-full pr-4 py-3.5 border border-gray-200 rounded-xl text-sm outline-none transition bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                 />
               </div>
             </div>
@@ -281,7 +279,7 @@ export default function Login() {
             <div className="mb-8">
               <label className="block mb-2 text-xs font-bold text-gray-500 uppercase tracking-widest" htmlFor="login-password">Contraseña</label>
               <div className="relative flex items-center">
-                <span className="absolute left-4 text-gray-400 pointer-events-none"><IconLock /></span>
+                <span className="absolute left-4 text-gray-400 pointer-events-none" style={{ top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center" }}><IconLock /></span>
                 <input
                   id="login-password"
                   type={verPass ? "text" : "password"}
@@ -290,11 +288,13 @@ export default function Login() {
                   placeholder="Ingrese su contraseña"
                   required
                   autoComplete="current-password"
-                  className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl text-sm outline-none transition bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  style={{ paddingLeft: "44px", paddingRight: "44px" }}
+                  className="w-full py-3.5 border border-gray-200 rounded-xl text-sm outline-none transition bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                 />
                 <button
                   type="button"
                   className="absolute right-4 text-gray-400 hover:text-gray-600 transition"
+                  style={{ top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center" }}
                   onClick={() => setVerPass(!verPass)}
                   tabIndex={-1}
                   aria-label={verPass ? "Ocultar contraseña" : "Mostrar contraseña"}
