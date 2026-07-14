@@ -37,25 +37,26 @@ export default function Inicio() {
     : "Dirección Académica";
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Bienvenido, {usuario?.username}</h2>
-          <p className="text-base text-gray-500 mt-1">Panel de {rolLabel}</p>
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] pb-4">
+      {/* Nuevo Hero Banner de Bienvenida Centrado */}
+      <div className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-r from-primary via-[#4a0d1f] to-primary shadow-xl">
+        {/* Decoración de fondo premium */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+          <svg className="absolute -top-24 -right-24 w-96 h-96 text-white" fill="currentColor" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></svg>
+          <svg className="absolute -bottom-24 -left-24 w-72 h-72 text-white" fill="currentColor" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></svg>
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white rounded-full blur-3xl opacity-30 transform -translate-y-1/2"></div>
         </div>
-        <div className="text-right">
-          <button
-            onClick={cargarDashboard}
-            disabled={cargando}
-            className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 transition-colors cursor-pointer shadow-sm"
-          >
-            {cargando ? "Actualizando..." : "Actualizar Datos"}
-          </button>
-          {ultimaActualizacion && (
-            <p className="text-xs text-gray-400 mt-2">
-              Última sincronización: {ultimaActualizacion.toLocaleTimeString()}
-            </p>
-          )}
+        
+        <div className="relative px-8 py-20 flex flex-col items-center justify-center text-center">
+          <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-6 backdrop-blur-md border border-white/20 shadow-inner">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-4 drop-shadow-md">
+            Hola, {usuario?.username}
+          </h2>
+          <p className="text-lg md:text-xl text-white/90 font-medium tracking-wide uppercase">
+            Panel de {rolLabel}
+          </p>
         </div>
       </div>
 
@@ -76,14 +77,7 @@ export default function Inicio() {
         </div>
       )}
 
-      {/* Tarjetas de estadísticas */}
-      {datos?.stats && datos.stats.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-          {datos.stats.map((stat, i) => (
-            <StatCard key={i} valor={stat.valor} etiqueta={stat.etiqueta} />
-          ))}
-        </div>
-      )}
+      {/* Tarjetas removidas según solicitud */}
 
       {/* Tabla Grande de Consolidado de Métricas (Solo para Dirección y Administrador) */}
       {!cargando && datos?.stats && datos.stats.length > 0 && (usuario?.rol === "direccion" || usuario?.rol === "administrador") && (
@@ -212,6 +206,22 @@ export default function Inicio() {
           <p className="text-base text-gray-500">No se registran asignaturas asignadas para el periodo académico actual.</p>
         </div>
       )}
+      <div className="mt-auto pt-12 pb-4 flex flex-col items-center">
+        <button
+          onClick={cargarDashboard}
+          disabled={cargando}
+          className="px-8 py-3.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary-hover disabled:opacity-50 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+        >
+          <svg className={`w-5 h-5 ${cargando ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          {cargando ? "Actualizando panel..." : "Actualizar Datos del Sistema"}
+        </button>
+        {ultimaActualizacion && (
+          <p className="text-xs font-bold text-gray-400 mt-4 flex items-center gap-1.5 uppercase tracking-widest">
+            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Sincronizado: {ultimaActualizacion.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
