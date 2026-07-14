@@ -147,62 +147,74 @@ export default function RecordReportes() {
               ))}
             </div>
           </div>
-          <table className="w-full text-sm mb-6">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Curso</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Cred.</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nota final</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {cursosFiltrados.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-500">No hay cursos que mostrar.</td></tr>
-              ) : cursosFiltrados.map((c, i) => (
-                <tr key={i} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-600">{c.periodo_academico_nombre}</td>
-                  <td className="px-4 py-3 text-gray-900 font-medium">{c.curso_nombre}</td>
-                  <td className="px-4 py-3 text-center text-gray-600">{c.creditos}</td>
-                  <td className="px-4 py-3 text-center font-semibold text-gray-900">{c.nota_final ?? "—"}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                      c.estado_nombre === "Aprobado" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"
-                    }`}>{c.estado_nombre}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto -mx-6 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <table className="min-w-[650px] w-full text-sm mb-2">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="text-left px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Curso</th>
+                      <th className="text-center px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Cred.</th>
+                      <th className="text-center px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nota final</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {cursosFiltrados.length === 0 ? (
+                      <tr><td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-500">No hay cursos que mostrar.</td></tr>
+                    ) : cursosFiltrados.map((c, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="px-6 py-3 text-gray-600">{c.periodo_academico_nombre}</td>
+                        <td className="px-6 py-3 text-gray-900 font-medium">{c.curso_nombre}</td>
+                        <td className="px-6 py-3 text-center text-gray-600">{c.creditos}</td>
+                        <td className="px-6 py-3 text-center font-semibold text-gray-900">{c.nota_final ?? "—"}</td>
+                        <td className="px-6 py-3">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                            c.estado_nombre === "Aprobado" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"
+                          }`}>{c.estado_nombre}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
           {kardex.historial.length > 0 && (
             <>
               <h4 className="text-base font-semibold text-gray-900 mb-4">Resumen por periodo</h4>
-              <table className="w-full text-sm mb-6">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Promedio</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Cred. aprob.</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Orden merito</th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Clasificacion</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {kardex.historial.map((h, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-gray-600">{h.periodo_academico_nombre}</td>
-                      <td className="px-4 py-3 text-center font-semibold text-gray-900">{h.promedio_ponderado_periodo}</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{h.creditos_aprobados_periodo}</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{h.orden_merito}</td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">{h.tipo_clasificacion_nombre}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="overflow-x-auto -mx-6 sm:mx-0">
+                <div className="inline-block min-w-full align-middle">
+                  <div className="overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <table className="min-w-[650px] w-full text-sm mb-2">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-200">
+                          <th className="text-left px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Periodo</th>
+                          <th className="text-center px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Promedio</th>
+                          <th className="text-center px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Cred. aprob.</th>
+                          <th className="text-center px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Orden merito</th>
+                          <th className="text-left px-6 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">Clasificacion</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 bg-white">
+                        {kardex.historial.map((h, i) => (
+                          <tr key={i} className="hover:bg-gray-50">
+                            <td className="px-6 py-3 text-gray-600">{h.periodo_academico_nombre}</td>
+                            <td className="px-6 py-3 text-center font-semibold text-gray-900">{h.promedio_ponderado_periodo}</td>
+                            <td className="px-6 py-3 text-center text-gray-600">{h.creditos_aprobados_periodo}</td>
+                            <td className="px-6 py-3 text-center text-gray-600">{h.orden_merito}</td>
+                            <td className="px-6 py-3">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">{h.tipo_clasificacion_nombre}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
@@ -236,24 +248,26 @@ export default function RecordReportes() {
             {cohortes.length === 0 ? (
               <p className="text-sm text-gray-500 text-center py-8">No hay datos de cohorte disponibles.</p>
             ) : (
-              <table className="w-full text-base">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Especialidad Académica</th>
-                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Matriculados</th>
-                    <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Promedio Ponderado General</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {cohortes.map((item) => (
-                    <tr key={item.especialidad_id ?? "sin-especialidad"} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-4 text-gray-900 font-semibold">{item.especialidad_nombre || `Especialidad #${item.especialidad_id}`}</td>
-                      <td className="px-6 py-4 text-center text-gray-600 font-medium">{item.total_estudiantes}</td>
-                      <td className="px-6 py-4 text-center text-gray-900 font-black text-lg">{item.promedio_ponderado}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-base min-w-[650px]">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="text-left px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Especialidad Académica</th>
+                      <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Matriculados</th>
+                      <th className="text-center px-6 py-3.5 font-bold text-gray-500 text-xs uppercase tracking-wider">Promedio Ponderado General</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {cohortes.map((item) => (
+                      <tr key={item.especialidad_id ?? "sin-especialidad"} className="hover:bg-gray-50/50">
+                        <td className="px-6 py-4 text-gray-900 font-semibold">{item.especialidad_nombre || `Especialidad #${item.especialidad_id}`}</td>
+                        <td className="px-6 py-4 text-center text-gray-600 font-medium">{item.total_estudiantes}</td>
+                        <td className="px-6 py-4 text-center text-gray-900 font-black text-lg">{item.promedio_ponderado}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </>
