@@ -243,9 +243,56 @@ export default function Sidebar() {
 
   return (
     <aside style={S.aside}>
-      {/* Título */}
+      {/* Título y Perfil del Usuario */}
       <div style={S.header}>
-        <h1 style={S.title}>Portal&nbsp;Academico</h1>
+        <h1 style={S.title}>Portal Académico</h1>
+        <div style={{
+          marginTop: "16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          padding: "12px",
+          backgroundColor: "rgba(255, 255, 255, 0.04)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          borderRadius: "12px",
+          backdropFilter: "blur(4px)"
+        }}>
+          <div style={{
+            width: "36px",
+            height: "36px",
+            borderRadius: "50%",
+            backgroundColor: "#be123c",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#ffffff",
+            fontWeight: "800",
+            fontSize: "14px",
+            textTransform: "uppercase",
+            boxShadow: "0 2px 8px rgba(190, 18, 60, 0.3)",
+            flexShrink: 0
+          }}>
+            {usuario.username.substring(0, 2)}
+          </div>
+          <div style={{ overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <span style={{
+              fontSize: "13px",
+              fontWeight: "750",
+              color: "#ffffff",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}>{usuario.username}</span>
+            <span style={{
+              fontSize: "10px",
+              fontWeight: "600",
+              color: "rgba(255, 255, 255, 0.45)",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginTop: "2px"
+            }}>{usuario.rol}</span>
+          </div>
+        </div>
       </div>
 
       {/* Navegación */}
