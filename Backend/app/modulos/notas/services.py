@@ -76,6 +76,9 @@ class NotasService:
         if not detalle:
             return None, "No se encontro la matricula para esta seccion", 404
 
+        if detalle.matricula and detalle.matricula.estado and detalle.matricula.estado.nombre == "Oficializado":
+            return None, "Bloqueo de seguridad: No se pueden alterar calificaciones de una matrícula oficializada.", 403
+
         cambios = []
         if nota_parcial is not None:
             detalle.nota_parcial = nota_parcial

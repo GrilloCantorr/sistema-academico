@@ -237,6 +237,11 @@ class MatriculaService:
             return None, "Debes seleccionar al menos un curso"
 
         periodo = MatriculaService.periodo_actual()
+        
+        # Validar si el periodo actual sigue vigente para matriculas
+        if periodo.fecha_fin and datetime.now() > periodo.fecha_fin:
+            return None, "El periodo de matrícula ha finalizado. No se aceptan nuevas solicitudes."
+            
         disponibles, error = MatriculaService.cursos_disponibles(usuario_id, periodo.id)
         if error:
             return None, error
