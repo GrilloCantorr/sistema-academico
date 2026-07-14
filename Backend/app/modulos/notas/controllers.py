@@ -151,7 +151,7 @@ def cerrar_acta():
     })
 
 
-def indicadores():
+def indicadores_academicos():
     resultado, error = NotasService.indicadores_academicos()
     if error:
         return jsonify({"error": error}), 400
