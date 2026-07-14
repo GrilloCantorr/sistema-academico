@@ -228,7 +228,7 @@ const S = {
 };
 
 // ── Componente ────────────────────────────────────────────────────────────────
-export default function Sidebar() {
+export default function Sidebar({ abierto, setAbierto }) {
   const { usuario, cerrarSesion } = useAuth();
   const navigate = useNavigate();
 
@@ -242,7 +242,21 @@ export default function Sidebar() {
   }
 
   return (
-    <aside style={S.aside}>
+    <>
+      {/* Backdrop de fondo oscuro para móvil al abrir */}
+      {abierto && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity"
+          onClick={() => setAbierto(false)}
+        />
+      )}
+
+      <aside 
+        style={S.aside}
+        className={`transition-all duration-300 transform lg:translate-x-0 ${
+          abierto ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+        }`}
+      >
       {/* Título y Perfil del Usuario */}
       <div style={S.header}>
         <h1 style={S.title}>Portal Académico</h1>
@@ -302,6 +316,7 @@ export default function Sidebar() {
             key={item.to}
             to={item.to}
             end={item.to === "/"}
+            onClick={() => setAbierto(false)}
             style={({ isActive }) => (isActive ? S.linkActive : S.linkInactive)}
             onMouseEnter={(e) => {
               const active = e.currentTarget.style.backgroundColor === "rgb(255, 255, 255)";
@@ -345,5 +360,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
