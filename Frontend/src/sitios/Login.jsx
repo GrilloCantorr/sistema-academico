@@ -40,18 +40,22 @@ const S = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f3f4f6",
+    background: "radial-gradient(circle at top left, #3b0712, #0f172a 70%, #1e1b4b 100%)",
     padding: "24px 16px",
     fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+    position: "relative",
+    overflow: "hidden"
   },
   card: {
     width: "100%",
     maxWidth: "420px",
-    backgroundColor: "#ffffff",
-    borderRadius: "20px",
-    border: "1px solid #e5e7eb",
-    padding: "44px 40px 40px",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
+    backgroundColor: "rgba(255, 255, 255, 0.98)",
+    backdropFilter: "blur(16px)",
+    borderRadius: "24px",
+    border: "1px solid rgba(255, 255, 255, 0.12)",
+    padding: "48px 40px 40px",
+    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+    zIndex: 10
   },
   cardHeader: {
     textAlign: "center",
@@ -204,11 +208,31 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      ...S.page,
-      background: "radial-gradient(circle, #4c0519 0%, #1c1917 100%)",
-    }}>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+    <div style={S.page}>
+      {/* Circulos decorativos de fondo con difuminado */}
+      <div style={{
+        position: "absolute",
+        top: "-10%",
+        left: "-10%",
+        width: "40vw",
+        height: "40vw",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(190,18,60,0.15) 0%, rgba(0,0,0,0) 70%)",
+        filter: "blur(40px)",
+        pointerEvents: "none"
+      }} />
+      <div style={{
+        position: "absolute",
+        bottom: "-10%",
+        right: "-10%",
+        width: "50vw",
+        height: "50vw",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(79,70,229,0.1) 0%, rgba(0,0,0,0) 70%)",
+        filter: "blur(60px)",
+        pointerEvents: "none"
+      }} />
+
       <div style={S.card}>
 
         {/* Encabezado */}
@@ -306,7 +330,6 @@ export default function Login() {
 
         {/* Error */}
         {error && <div style={S.errorBox}>⚠ {error}</div>}
-      </div>
       </div>
     </div>
   );
