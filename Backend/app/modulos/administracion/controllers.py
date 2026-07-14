@@ -136,6 +136,10 @@ def crear_usuario():
     if len(password) < 6:
         return jsonify({"error": "La contraseña debe tener al menos 6 caracteres"}), 400
 
+    import re
+    if not re.search("[a-zA-Z]", password) or not re.search("[0-9]", password):
+        return jsonify({"error": "La contraseña debe contener al menos una letra y un número"}), 400
+
     usuario = Usuario(
         username=username,
         password=bcrypt.generate_password_hash(password).decode("utf-8"),
@@ -249,6 +253,10 @@ def cambiar_password(usuario_id):
     if not nueva_password or len(nueva_password) < 6:
         return jsonify({"error": "La contraseña debe tener al menos 6 caracteres"}), 400
 
+    import re
+    if not re.search("[a-zA-Z]", nueva_password) or not re.search("[0-9]", nueva_password):
+        return jsonify({"error": "La contraseña debe contener al menos una letra y un número"}), 400
+
     usuario = db.session.get(Usuario, usuario_id)
     if not usuario:
         return jsonify({"error": "Usuario no encontrado"}), 404
@@ -302,6 +310,15 @@ def registrar_docente():
         return jsonify({"error": f"Faltan campos requeridos: {faltantes}"}), 400
 
     username = data.get("username")
+    password = data.get("password")
+
+    if len(password) < 6:
+        return jsonify({"error": "La contraseña debe tener al menos 6 caracteres"}), 400
+
+    import re
+    if not re.search("[a-zA-Z]", password) or not re.search("[0-9]", password):
+        return jsonify({"error": "La contraseña debe contener al menos una letra y un número"}), 400
+
     if Usuario.query.filter_by(username=username).first():
         return jsonify({"error": "El nombre de usuario ya está en uso"}), 400
 
