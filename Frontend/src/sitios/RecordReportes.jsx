@@ -57,8 +57,8 @@ export default function RecordReportes() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Desempeño de Cohortes</h2>
-        <p className="text-base text-gray-500 mt-2">Análisis de rendimiento por especialidad y reportes académicos consolidados.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Evaluación y Desempeño Académico</h2>
+        <p className="text-base text-gray-500 mt-2">Estudio comparativo de rendimiento estudiantil por periodos y especialidades.</p>
       </div>
 
       {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}

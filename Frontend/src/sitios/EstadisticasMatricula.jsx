@@ -19,8 +19,8 @@ export default function EstadisticasMatricula() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Métricas de Ingreso</h2>
-        <p className="text-base text-gray-500 mt-2">Monitoreo estratégico y consolidado de solicitudes de matrícula por estado.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Estadísticas e Indicadores de Admisiones</h2>
+        <p className="text-base text-gray-500 mt-2">Seguimiento y control de los procesos de matrícula y registros estudiantiles.</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
