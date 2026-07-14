@@ -8,7 +8,7 @@ Esta plataforma es un sistema integral y modular diseñado para digitalizar y op
 
 El sistema se compone de dos componentes independientes:
 
-*   **Frontend (React + Vite):** Interface de usuario dinámica y responsiva. Utiliza Tailwind CSS v4 para la gestión de estilos y un enfoque temático corporativo basado en tonos azul cobalto y pizarra. Las vistas están completamente protegidas mediante rutas privadas basadas en roles de usuario.
+*   **Frontend (React + Vite):** Interface de usuario dinámica y responsiva. Utiliza Tailwind CSS v4 para la gestión de estilos y un enfoque temático corporativo basado en tonos Carmesí Prestigio (Crimson Prestige) y guinda profundo. Las vistas están completamente protegidas mediante rutas privadas basadas en roles de usuario.
 *   **Backend (Python Flask):** Servicio REST API robusto encargado del procesamiento de negocio, transacciones seguras de base de datos y control de accesos. Utiliza Flask-SQLAlchemy como ORM y Flask-JWT-Extended para la autenticación sin estado mediante tokens firmados.
 *   **Base de datos:** Compatible con SQLite (por defecto en modo de desarrollo) o MySQL/PostgreSQL configurando la variable de entorno correspondiente.
 
