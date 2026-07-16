@@ -111,8 +111,8 @@ Puede utilizar cualquiera de las siguientes cuentas pre-sembradas para evaluar l
 Toda la documentación formal, guías de sustentación, diagramas arquitectónicos y archivos solicitados para la Evaluación Final se encuentran debidamente organizados dentro de la carpeta **`Documentos/`** en la raíz de este repositorio.
 
 Allí encontrará:
-*   Documento Extenso de Sustentación (Dossier Técnico).
-*   Guía de Demostración en Vivo (Paso a paso).
-*   Presentaciones Oficiales (`.pptx`).
-*   Diagramas de Arquitectura y Base de Datos.
-*   Archivos originales de Historias de Usuario (`.xlsx`).
+*   `Documentacion_Funcionalidades.pdf`
+*   `Sistema_Academico_Huaynate Coriñaupa.pptx`
+*   `Modelado_Base_Datos.pdf`
+*   `Historias_Usuario_Sistema_Academico.xlsx`
+*   `EvalFinal (1).pdf`
