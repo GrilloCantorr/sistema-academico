@@ -1,6 +1,6 @@
 import { peticion } from "./api";
 
-const URL_BASE = "http://localhost:5000/api";
+const URL_BASE = "https://should-pound-necessarily-crest.trycloudflare.com/api";
 
 export async function listarSolicitudes() {
   return peticion("/certificados/bandeja");

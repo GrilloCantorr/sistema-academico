@@ -48,5 +48,5 @@ export async function obtenerEstadisticas() {
 }
 
 export function urlDescargarFicha(matriculaId) {
-  return `http://localhost:5000/api/matriculas/${matriculaId}/ficha`;
+  return `https://should-pound-necessarily-crest.trycloudflare.com/api/matriculas/${matriculaId}/ficha`;
 }
