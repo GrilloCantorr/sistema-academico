@@ -1,112 +1,105 @@
-# Portal Académico Minerva - Plataforma Web de Gestión Educativa
+# Sistema Académico Integral - Plataforma Web de Gestión Educativa
 
 Esta plataforma es un sistema integral y modular diseñado para digitalizar y optimizar los procesos administrativos, académicos e institucionales en facultades universitarias. La aplicación está construida sobre una arquitectura desacoplada (Frontend/Backend) utilizando React en la interfaz y Python Flask en los servicios del servidor.
 
 ---
 
-## 🛠️ Arquitectura y Tecnologías
+## Arquitectura y Tecnologías
 
-El sistema se compone de dos componentes independientes:
+El sistema se compone de dos módulos independientes:
 
-*   **Frontend (React + Vite):** Interface de usuario dinámica y responsiva. Utiliza Tailwind CSS v4 para la gestión de estilos y un enfoque temático corporativo basado en tonos Carmesí Prestigio (Crimson Prestige) y guinda profundo. Las vistas están completamente protegidas mediante rutas privadas basadas en roles de usuario.
-*   **Backend (Python Flask):** Servicio REST API robusto encargado del procesamiento de negocio, transacciones seguras de base de datos y control de accesos. Utiliza Flask-SQLAlchemy como ORM y Flask-JWT-Extended para la autenticación sin estado mediante tokens firmados.
-*   **Base de datos:** Compatible con SQLite (por defecto en modo de desarrollo) o MySQL/PostgreSQL configurando la variable de entorno correspondiente.
-
----
-
-## 📦 Módulos Principales del Sistema
-
-1.  **Módulo de Autenticación y Seguridad:** Acceso restringido por credenciales cifradas (Bcrypt) y gestión de tokens JWT con expiración controlada.
-2.  **Módulo de Matrícula:** Flujo completo desde la solicitud en línea por parte del estudiante (validando cruce de horarios y pre-requisitos curriculares) hasta la aprobación e inspección financiera del personal administrativo.
-3.  **Módulo de Cursos y Docentes:** Control de asignaciones de materias, gestión de horarios por sección e ingresos y cierres de actas académicas.
-4.  **Módulo de Calificaciones:** Llenado asíncrono de notas parciales por parte del docente con cálculo automático de promedios ponderados y visualización instantánea para los estudiantes.
-5.  **Módulo de Certificados y Trámites:** Flujo digitalizado de expedición de constancias de estudio e historial académico en formato PDF oficial.
-6.  **Panel de Auditorías:** Rastreo inalterable de operaciones críticas, almacenando autoría, marcas de tiempo y metadatos del sistema para seguridad institucional.
+*   **Frontend (React + Vite):** Interfaz de usuario dinámica y responsiva, estructurada como una Single Page Application (SPA). Utiliza Tailwind CSS para la gestión de estilos con un enfoque corporativo e institucional. Las vistas están completamente protegidas mediante enrutamiento privado basado en roles de usuario.
+*   **Backend (Python Flask):** Servicio REST API robusto encargado del procesamiento de la lógica de negocio, transacciones seguras y control de accesos. Emplea Flask-SQLAlchemy como ORM y Flask-JWT-Extended para la autenticación sin estado mediante tokens firmados.
+*   **Base de Datos:** Compatible con SQLite (configurado por defecto para entornos de desarrollo y pruebas) o sistemas como MySQL/PostgreSQL mediante variables de entorno.
 
 ---
 
-## 🚀 Guía de Instalación y Despliegue
+## Módulos Principales del Sistema
+
+1.  **Módulo de Administración y Seguridad:** Acceso restringido por credenciales encriptadas y control de accesos por roles (RBAC). Permite la definición estricta de perfiles (Administrador, Dirección, Docente, Estudiante) y el rastreo inalterable de auditorías.
+2.  **Módulo de Matrícula:** Gestión integral desde la solicitud en línea del estudiante (con validación de prerrequisitos) hasta la aprobación, verificación financiera y emisión de la ficha de matrícula oficial.
+3.  **Módulo de Cursos y Docentes:** Organización y asignación de carga académica, vinculación de docentes a secciones, gestión de horarios de clase y administración centralizada de sílabos.
+4.  **Módulo de Notas y Récord Académico:** Registro asíncrono de calificaciones parciales y finales. Automatiza la consolidación del historial académico, kardex de estudiantes y generación de reportes e indicadores de rendimiento.
+5.  **Módulo de Certificados y Trámites:** Flujo digitalizado para la solicitud, autorización y expedición de documentos oficiales en formato PDF, incorporando mecanismos de validación modernos (Firma digital/Código QR).
+
+---
+
+## Guía de Instalación y Despliegue
 
 ### Requisitos Mínimos
 *   Python 3.10 o superior.
 *   Node.js 18.0 o superior.
-*   Gestor de base de datos (SQLite se crea automáticamente, opcional MySQL/Docker).
+*   Gestor de base de datos relacional (SQLite incluido por defecto).
 
 ---
 
-### 💻 Paso 1: Configurar el Servidor (Backend)
+### Paso 1: Configurar el Servidor (Backend)
 
-1.  Accede a la carpeta de backend:
+1.  Acceda a la carpeta principal del backend:
     ```bash
     cd Backend
     ```
-2.  Crea e inicializa tu entorno virtual:
+2.  Cree e inicialice el entorno virtual de Python:
     ```bash
     python -m venv venv
+    
     # En Windows:
     .\venv\Scripts\Activate.ps1
     # En macOS/Linux:
     source venv/bin/activate
     ```
-3.  Instala todas las dependencias del ecosistema de Flask:
+3.  Instale todas las dependencias requeridas del proyecto:
     ```bash
     pip install -r requirements.txt
     ```
-4.  Configura tus variables de entorno creando un archivo `.env` dentro de `Backend/`:
-    ```env
-    # Servidor SQLite local para desarrollo rápido (Recomendado):
-    DATABASE_URL=sqlite:///app.db
-    SECRET_KEY=cambiar_este_valor_super_secreto
-    ```
-5.  *(Opcional)* Recrea la base de datos limpia y siembra las tablas con datos de prueba semilla:
+4.  Opcional: Recree la base de datos y siembre los datos de prueba institucionales:
     ```bash
-    python fresh.py
+    python reseed.py
     ```
-    *Nota: Escribe 'si' cuando el prompt lo solicite para proceder con la limpieza.*
-
-6.  Inicia el servidor Flask:
+5.  Inicie el servidor web de Flask:
     ```bash
     python run.py
     ```
-    *El Backend quedará escuchando peticiones en `http://127.0.0.1:5000`.*
+    *El Backend permanecerá a la escucha de peticiones HTTP en `http://127.0.0.1:5000`.*
 
 ---
 
-### 🎨 Paso 2: Configurar la Interfaz (Frontend)
+### Paso 2: Configurar la Interfaz (Frontend)
 
-1.  Abre una terminal paralela y dirígete al módulo web:
+1.  Abra una segunda ventana de terminal y diríjase al entorno de la interfaz:
     ```bash
     cd Frontend
     ```
-2.  Instala los paquetes necesarios de Node:
+2.  Descargue e instale los paquetes de Node:
     ```bash
     npm install
     ```
-3.  Corre el servidor de desarrollo local de Vite:
+3.  Inicie el servidor de desarrollo local:
     ```bash
     npm run dev
     ```
-    *La interfaz de usuario estará lista en su navegador en `http://localhost:5173`.*
+    *La plataforma estará disponible para su acceso en el navegador mediante `http://localhost:5173`.*
 
 ---
 
-## 👥 Credenciales de Prueba Presembradas
+## Credenciales de Acceso (Entorno de Pruebas)
 
-Puedes utilizar cualquiera de las siguientes cuentas para explorar las interfaces según sus privilegios específicos (Contraseña general: `123456`):
+Puede utilizar cualquiera de las siguientes cuentas pre-sembradas para evaluar los distintos niveles de privilegios.
+*(Contraseña predeterminada para todos los usuarios: `password123`)*
 
-| Rol | Usuario | Propósito en la Demostración |
+| Perfil de Rol | Usuario (Ejemplo) | Funciones Disponibles en la Demostración |
 | :--- | :--- | :--- |
-| **Administrador** | `admin_prueba` | Crear cursos, aprobar matrículas, emitir certificados y gestionar usuarios. |
-| **Dirección** | `direccion_prueba` | Monitorear estadísticas globales, auditar logs de seguridad y revisar actas. |
-| **Docente** | `docente1_prueba` | Llenar notas en su sección asignada y bloquear actas de evaluación. |
-| **Estudiante** | `estudiante1_prueba` | Solicitar matrícula de asignaturas, ver récord académico y pedir certificados. |
+| **Administrador** | `admin` | Validar matrículas, gestionar carga docente, emitir certificados oficiales y configurar usuarios. |
+| **Dirección** | `direccion` | Evaluar indicadores de rendimiento académico, auditar registros de seguridad y visualizar estadísticas globales. |
+| **Docente** | `juan.perez` | Registrar calificaciones por sección, adjuntar sílabos y revisar listado de alumnos. |
+| **Estudiante** | `20240001` | Solicitar matrícula en línea, consultar récord académico histórico y emitir constancias. |
 
 ---
 
-## 📝 Solución de Problemas Comunes (Troubleshooting)
+## Solución de Problemas Comunes
 
-*   **Error de ejecución de scripts en PowerShell:** Si al activar el entorno virtual (`venv`) en Windows obtienes un error de permisos, abre PowerShell como Administrador y ejecuta por única vez:
+*   **Error de permisos en PowerShell (Windows):** Si experimenta errores al intentar activar el entorno virtual (`venv`), ejecute su terminal como Administrador y aplique la siguiente política de ejecución:
     ```powershell
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
     ```
-*   **Colisión de Puertos (EADDRINUSE):** Si el puerto `5000` (Backend) o `5173` (Frontend) ya está en uso por otro servicio de tu máquina, puedes reconfigurarlos en `Backend/run.py` o `Frontend/vite.config.js` respectivamente.
+*   **Conflictos de Puerto (EADDRINUSE):** Si los puertos `5000` (Backend) o `5173` (Frontend) ya se encuentran ocupados por otro servicio en su sistema, deberá detener dicho servicio o modificar los puertos directamente en `Backend/run.py` o `Frontend/vite.config.js`.
