@@ -30,6 +30,7 @@ from app.seeders import (
     tipo_clasificacion_merito_seeder,
     tipo_docente_seeder,
     usuario_seeder,
+    demo_data_seeder,
 )
 
 
@@ -65,6 +66,7 @@ SEEDERS = [
     acta_seeder.ejecutar,
     expediente_semestral_seeder.ejecutar,
     silabo_seeder.ejecutar,
+    demo_data_seeder.ejecutar,
 ]
 
 

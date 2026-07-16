@@ -25,6 +25,7 @@ def ejecutar():
         periodo_academico_id=periodo.id,
         semestre_id=semestre.id,
         estado_id=estado.id,
+        pagado=True,
     )
 
     db.session.add(matricula)
