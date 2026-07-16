@@ -103,3 +103,16 @@ Puede utilizar cualquiera de las siguientes cuentas pre-sembradas para evaluar l
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
     ```
 *   **Conflictos de Puerto (EADDRINUSE):** Si los puertos `5000` (Backend) o `5173` (Frontend) ya se encuentran ocupados por otro servicio en su sistema, deberá detener dicho servicio o modificar los puertos directamente en `Backend/run.py` o `Frontend/vite.config.js`.
+
+---
+
+## 📁 Archivos Entregables y Documentación
+
+Toda la documentación formal, guías de sustentación, diagramas arquitectónicos y archivos solicitados para la Evaluación Final se encuentran debidamente organizados dentro de la carpeta **`Documentos/`** en la raíz de este repositorio.
+
+Allí encontrará:
+*   Documento Extenso de Sustentación (Dossier Técnico).
+*   Guía de Demostración en Vivo (Paso a paso).
+*   Presentaciones Oficiales (`.pptx`).
+*   Diagramas de Arquitectura y Base de Datos.
+*   Archivos originales de Historias de Usuario (`.xlsx`).
