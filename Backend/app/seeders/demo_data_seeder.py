@@ -380,11 +380,13 @@ def ejecutar():
     # 9. Crear Certificados
     # Algunos alumnos tienen solicitudes de certificados
     certificados_data = [
-        (lista_estudiantes[0], "Constancia de Estudios", "Pendiente de Validación", "ticket-001"),
-        (lista_estudiantes[1], "Récord de Notas", "Firmado y Emitido", "ticket-002"),
-        (lista_estudiantes[2], "Constancia de Estudios", "Rechazado", "ticket-003"),
-        (lista_estudiantes[3], "Boleta de Notas", "Pendiente de Validación", "ticket-004"),
-        (lista_estudiantes[4], "Récord de Notas", "Firmado y Emitido", "ticket-005")
+        (lista_estudiantes[0], "Constancia de estudios", "Pendiente de Validación", "TCK-2026-001"),
+        (lista_estudiantes[0], "Constancia de matricula", "Autorizado por Dirección", "TCK-2026-002"),
+        (lista_estudiantes[0], "Certificado de notas", "Emitido", "TCK-2026-003"),
+        (lista_estudiantes[1], "Certificado de notas", "Emitido", "TCK-2026-004"),
+        (lista_estudiantes[2], "Constancia de estudios", "Rechazado", "TCK-2026-005"),
+        (lista_estudiantes[3], "Record academico", "Pendiente de Validación", "TCK-2026-006"),
+        (lista_estudiantes[4], "Certificado de notas", "Emitido", "TCK-2026-007")
     ]
     
     for est, tipo, estado, ticket in certificados_data:
@@ -397,9 +399,9 @@ def ejecutar():
                 estado=estado,
                 comprobante_pago_ruta=f"vouchers/cert_{est.id}.pdf",
                 motivo_rechazo="Pago inválido o incompleto" if estado == "Rechazado" else None,
-                hash_documento="a3b5c6d7e8f9" if estado == "Firmado y Emitido" else None,
-                fecha_firma=datetime.utcnow() if estado == "Firmado y Emitido" else None,
-                codigo_verificacion=f"verif-code-{est.id}"
+                hash_documento="a3b5c6d7e8f90123456789abcdef" if estado == "Emitido" else None,
+                fecha_firma=datetime.utcnow() if estado == "Emitido" else None,
+                codigo_verificacion=f"verif-code-{est.id}-{ticket}"
             )
             db.session.add(cert)
             
