@@ -7,7 +7,7 @@ const ROLES = ["estudiante", "docente", "administrador", "direccion"];
 
 const ESTADO_INICIAL_FORM = {
   username: "", password: "", rol: "estudiante", nombres: "", apellido_paterno: "",
-  apellido_materno: "", correo_institucional: "", especialidad_id: "",
+  apellido_materno: "", correo_institucional: "", especialidad_id: "", dni: "",
 };
 
 export default function AdministracionUsuarios() {
@@ -305,6 +305,10 @@ export default function AdministracionUsuarios() {
                       <label>Correo institucional *</label>
                       <input type="email" required value={formulario.correo_institucional} onChange={(e) => actualizarCampo("correo_institucional", e.target.value)} />
                     </div>
+                  </div>
+                  <div className="mb-4">
+                    <label>DNI *</label>
+                    <input type="text" required pattern="[0-9]{8}" title="El DNI debe tener 8 dígitos numéricos" maxLength={8} value={formulario.dni} onChange={(e) => actualizarCampo("dni", e.target.value.replace(/\D/g, ""))} />
                   </div>
                   {formulario.rol === "estudiante" && (
                     <div className="mb-4">

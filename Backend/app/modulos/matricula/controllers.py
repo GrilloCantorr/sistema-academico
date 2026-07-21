@@ -120,6 +120,7 @@ def validar_requisitos(matricula_id):
 
 
 def registrar_pago(matricula_id):
+    usuario_id = get_jwt_identity()
     matricula = db.session.get(Matricula, matricula_id)
     if not matricula:
         return jsonify({"error": "Matrícula no encontrada"}), 404

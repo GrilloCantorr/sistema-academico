@@ -155,6 +155,7 @@ def crear_usuario():
         apellido_paterno = data.get("apellido_paterno", "").strip()
         apellido_materno = data.get("apellido_materno", "").strip()
         correo_institucional = data.get("correo_institucional", "").strip()
+        dni = data.get("dni", "").strip()
         especialidad_id = data.get("especialidad_id")
 
         faltantes = []
@@ -162,6 +163,7 @@ def crear_usuario():
         if not apellido_paterno: faltantes.append("apellido_paterno")
         if not apellido_materno: faltantes.append("apellido_materno")
         if not correo_institucional: faltantes.append("correo_institucional")
+        if not dni: faltantes.append("dni")
         if not especialidad_id: faltantes.append("especialidad_id")
         if faltantes:
             db.session.rollback()
@@ -173,6 +175,7 @@ def crear_usuario():
             nombres=nombres,
             apellido_paterno=apellido_paterno,
             apellido_materno=apellido_materno,
+            dni=dni,
             correo_institucional=correo_institucional,
         )
         db.session.add(estudiante)
@@ -183,12 +186,14 @@ def crear_usuario():
         apellido_paterno = data.get("apellido_paterno", "").strip()
         apellido_materno = data.get("apellido_materno", "").strip()
         correo_institucional = data.get("correo_institucional", "").strip()
+        dni = data.get("dni", "").strip()
 
         faltantes = []
         if not nombres: faltantes.append("nombres")
         if not apellido_paterno: faltantes.append("apellido_paterno")
         if not apellido_materno: faltantes.append("apellido_materno")
         if not correo_institucional: faltantes.append("correo_institucional")
+        if not dni: faltantes.append("dni")
         if faltantes:
             db.session.rollback()
             return jsonify({"error": f"Faltan campos para docente: {faltantes}"}), 400
@@ -198,6 +203,7 @@ def crear_usuario():
             nombres=nombres,
             apellido_paterno=apellido_paterno,
             apellido_materno=apellido_materno,
+            dni=dni,
             correo_institucional=correo_institucional,
         )
         db.session.add(docente)
