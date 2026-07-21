@@ -342,10 +342,8 @@ def ejecutar():
             ))
             
         # Asignar detalles de cursos en la matrícula
-        # Alumnos llevan BD1, REQ1, y si es regular también BD2 o ARQ1
-        cursos_lleva = ["BD1", "REQ1"]
-        if i % 2 == 0:
-            cursos_lleva.append("ARQ1")
+        # Alumnos llevan las materias de docente1 (PROG1, MAT1, FIS1, REQ1) + asignaturas complementarias
+        cursos_lleva = ["PROG1", "MAT1", "FIS1", "REQ1", "BD1", "ARQ1"]
             
         for cod in cursos_lleva:
             seccion = secciones_actuales_dict.get(cod)
