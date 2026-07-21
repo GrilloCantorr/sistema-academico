@@ -4,7 +4,8 @@ import {
   listarEstadosMatricula, 
   validarRequisitos, 
   registrarPago, 
-  generarFichaOficial 
+  generarFichaOficial,
+  urlDescargarFicha
 } from "../servicios/matricula.servicio";
 
 export default function ListarMatriculas() {
@@ -201,8 +202,18 @@ export default function ListarMatriculas() {
                   )}
 
                   {(matriculaSeleccionada.estado_id === 3 || matriculaSeleccionada.estado?.id === 3) && (
-                    <div className="w-full p-4 text-center rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-base">
-                      Matrícula Completada y Documento Emitido Exitosamente
+                    <div className="flex flex-col gap-3">
+                      <div className="w-full p-4 text-center rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-base">
+                        Matrícula Completada y Documento Emitido Exitosamente
+                      </div>
+                      <a 
+                        href={urlDescargarFicha(matriculaSeleccionada.id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-base font-semibold rounded-lg transition-colors shadow-sm cursor-pointer text-center no-underline inline-block"
+                      >
+                        Descargar Ficha de Matrícula (PDF)
+                      </a>
                     </div>
                   )}
                 </div>
