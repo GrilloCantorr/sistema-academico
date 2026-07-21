@@ -1,6 +1,4 @@
-import { peticion } from "./api";
-
-const URL_BASE = "https://should-pound-necessarily-crest.trycloudflare.com/api";
+import { peticion, URL_BASE } from "./api";
 
 export async function listarCursos() {
   return peticion("/cursos-docentes/");

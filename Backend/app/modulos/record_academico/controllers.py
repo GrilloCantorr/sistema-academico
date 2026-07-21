@@ -8,7 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak
 from app import db
 from app.modelos.historial_merito import HistorialMerito
 from app.modelos.progreso_estudiante import ProgresoEstudiante
@@ -249,6 +249,7 @@ def kardex_estudiante(estudiante_id):
             "apellido_materno": estudiante.apellido_materno,
             "nombre_completo": f"{estudiante.nombres} {estudiante.apellido_paterno} {estudiante.apellido_materno}",
             "correo_institucional": estudiante.correo_institucional,
+            "codigo": estudiante.usuario.username if estudiante.usuario else "—",
             "especialidad_nombre": estudiante.especialidad.nombre if estudiante.especialidad else "—",
             "facultad_nombre": estudiante.especialidad.facultad.nombre if estudiante.especialidad and estudiante.especialidad.facultad else "—",
         },
@@ -368,6 +369,116 @@ def descargar_kardex_pdf(estudiante_id):
             f"Avance del plan: {plan_data['creditos_aprobados']} / {plan_data['total_creditos_requeridos']} créditos ({plan_data['porcentaje']}%)",
             styles["Normal"]
         ))
+
+    # -------------------------------------------------------------
+    # PÁGINA 2: CONSTANCIA DE INSCRIPCIÓN / MATRÍCULA
+    # -------------------------------------------------------------
+    matricula = Matricula.query.filter_by(estudiante_id=estudiante_id).order_by(Matricula.id.desc()).first()
+    if matricula:
+        elementos.append(PageBreak())
+        
+        # Estilos específicos para la segunda página
+        styles.add(ParagraphStyle("TitleCenter", fontSize=16, leading=20, alignment=1, spaceAfter=6, fontName="Helvetica-Bold"))
+        styles.add(ParagraphStyle("SubtitleCenter", fontSize=10, leading=14, alignment=1, textColor=colors.HexColor("#4b5563"), spaceAfter=15))
+        styles.add(ParagraphStyle("Justified", fontSize=10, leading=14, alignment=4, spaceAfter=12))
+        
+        elementos.append(Paragraph("CONSTANCIA OFICIAL DE INSCRIPCIÓN", styles["TitleCenter"]))
+        periodo_nombre = matricula.periodo_academico.nombre if matricula.periodo_academico else f"Periodo {matricula.periodo_academico_id}"
+        elementos.append(Paragraph(f"Periodo Académico: {periodo_nombre}", styles["SubtitleCenter"]))
+        
+        elementos.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#059669")))  # Verde para la constancia
+        elementos.append(Spacer(1, 15))
+        
+        texto_cert = (
+            f"La Dirección de Servicios Académicos y Registro certifica que el estudiante "
+            f"<b>{estudiante['nombre_completo']}</b>, identificado con el código <b>{estudiante['codigo'] or estudiante['id']}</b> "
+            f"e inscrito en la especialidad de <b>{estudiante['especialidad_nombre']}</b>, se encuentra registrado "
+            f"e inscrito formalmente en las asignaturas detalladas a continuación."
+        )
+        elementos.append(Paragraph(texto_cert, styles["Justified"]))
+        elementos.append(Spacer(1, 12))
+        
+        semestre_codigo = matricula.semestre.codigo if matricula.semestre else f"Semestre {matricula.semestre_id}"
+        estado_nombre = matricula.estado.nombre if matricula.estado else "Pendiente"
+        pago_estado = "Confirmado / Pagado" if matricula.pagado else "Pendiente de Pago"
+        fecha_reg = matricula.created_at.strftime('%d/%m/%Y %H:%M') if matricula.created_at else datetime.now().strftime('%d/%m/%Y')
+        
+        meta_data = [
+            ["N° Solicitud/Matrícula:", str(matricula.id), "Semestre de Ingreso:", semestre_codigo],
+            ["Fecha de Registro:", fecha_reg, "Estado Administrativo:", estado_nombre],
+            ["Derecho de Pago:", pago_estado, "Condición Académica:", "Regular"]
+        ]
+        t_meta = Table(meta_data, colWidths=[130, 120, 130, 120])
+        t_meta.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+            ("FONTNAME", (2, 0), (2, -1), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("TEXTCOLOR", (1, 2), (1, 2), colors.HexColor("#10b981") if matricula.pagado else colors.HexColor("#ef4444")),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LINEBELOW", (0, 0), (-1, -1), 0.5, colors.HexColor("#f3f4f6")),
+        ]))
+        elementos.append(t_meta)
+        elementos.append(Spacer(1, 15))
+        
+        elementos.append(Paragraph("Detalle de Asignaturas Inscritas", styles["Title2"]))
+        elementos.append(Spacer(1, 6))
+        
+        detalles = MatriculaDetalle.query.filter_by(matricula_id=matricula.id).all()
+        if detalles:
+            header_det = [["Código", "Asignatura / Curso", "Sección", "Créditos"]]
+            rows_det = []
+            total_creditos = 0
+            for d in detalles:
+                seccion = d.seccion_curso
+                curso = seccion.curso if seccion else None
+                curso_codigo = curso.codigo if curso else "—"
+                curso_nom = curso.nombre if curso else f"Sección {d.seccion_curso_id}"
+                seccion_nom = f"Sec. {seccion.id}" if seccion else "Única"
+                cred = curso.creditos if curso else 0
+                total_creditos += cred
+                
+                rows_det.append([curso_codigo, curso_nom, seccion_nom, str(cred)])
+            
+            rows_det.append(["", "TOTAL CRÉDITOS INSCRITOS", "", str(total_creditos)])
+            
+            t_det = Table(header_det + rows_det, colWidths=[70, 230, 80, 60])
+            t_det.setStyle(TableStyle([
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#059669")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("ALIGN", (3, 0), (3, -1), "CENTER"),
+                ("ALIGN", (2, 0), (2, -1), "CENTER"),
+                ("GRID", (0, 0), (-1, -2), 0.5, colors.HexColor("#e5e7eb")),
+                ("FONTNAME", (1, -1), (1, -1), "Helvetica-Bold"),
+                ("FONTNAME", (3, -1), (3, -1), "Helvetica-Bold"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -2), [colors.white, colors.HexColor("#fafdfb")]),
+            ]))
+            elementos.append(t_det)
+        else:
+            elementos.append(Paragraph("No se encontraron cursos inscritos en esta matrícula.", styles["Normal"]))
+            
+        elementos.append(Spacer(1, 35))
+        
+        firmas_data = [
+            ["", ""],
+            ["___________________________", "___________________________"],
+            ["Oficina de Registro Académico", "Firma del Estudiante"],
+            ["Sello Digital Autorizado", f"Código de Validación: REG-{matricula.id:06d}"]
+        ]
+        t_firmas = Table(firmas_data, colWidths=[240, 240])
+        t_firmas.setStyle(TableStyle([
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ("FONTNAME", (0, 2), (-1, 3), "Helvetica"),
+            ("FONTSIZE", (0, 2), (-1, -1), 8),
+            ("TEXTCOLOR", (0, 2), (-1, -1), colors.HexColor("#4b5563")),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ]))
+        elementos.append(t_firmas)
 
     doc.build(elementos)
     buf.seek(0)

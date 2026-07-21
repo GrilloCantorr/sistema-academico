@@ -1,4 +1,4 @@
-const URL_BASE = "https://should-pound-necessarily-crest.trycloudflare.com/api";
+export const URL_BASE = "http://localhost:5000/api";
 
 export async function peticion(ruta, opciones = {}) {
   const token = localStorage.getItem("token");

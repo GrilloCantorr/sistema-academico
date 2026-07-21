@@ -1,4 +1,4 @@
-import { peticion } from "./api";
+import { peticion, URL_BASE } from "./api";
 
 export async function obtenerRecord(estudianteId) {
   return peticion(`/record-academico/${estudianteId}`);
@@ -37,5 +37,6 @@ export async function kardexEstudiante(estudianteId) {
 }
 
 export function urlKardexPdf(estudianteId) {
-  return `/api/record-academico/kardex/${estudianteId}/pdf`;
+  const token = localStorage.getItem("token");
+  return `${URL_BASE}/record-academico/kardex/${estudianteId}/pdf?jwt=${token}`;
 }

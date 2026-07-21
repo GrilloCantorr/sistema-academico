@@ -7,7 +7,7 @@ def rol_requerido(*roles_permitidos):
     def decorador(funcion):
         @wraps(funcion)
         def wrapper(*args, **kwargs):
-            verify_jwt_in_request()
+            verify_jwt_in_request(locations=["headers", "query_string"])
             claims = get_jwt()
             rol_usuario = claims.get("rol")
 

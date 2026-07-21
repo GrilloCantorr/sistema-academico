@@ -1,4 +1,4 @@
-import { peticion } from "./api";
+import { peticion, URL_BASE } from "./api";
 
 export async function solicitarMatricula(seccionesCursoIds) {
   return peticion("/matriculas/", {
@@ -48,5 +48,6 @@ export async function obtenerEstadisticas() {
 }
 
 export function urlDescargarFicha(matriculaId) {
-  return `https://should-pound-necessarily-crest.trycloudflare.com/api/matriculas/${matriculaId}/ficha`;
+  const token = localStorage.getItem("token");
+  return `${URL_BASE}/matriculas/${matriculaId}/ficha?jwt=${token}`;
 }
