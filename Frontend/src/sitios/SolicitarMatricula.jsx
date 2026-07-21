@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { solicitarMatricula, obtenerPeriodoActual, obtenerCursosDisponibles, urlDescargarFicha } from "../servicios/matricula.servicio";
+import { solicitarMatricula, obtenerPeriodoActual, obtenerCursosDisponibles, urlDescargarFicha, listarMatriculas } from "../servicios/matricula.servicio";
 
 const NOMBRES_DIA = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
@@ -32,9 +32,10 @@ export default function SolicitarMatricula() {
 
   async function cargarDatos() {
     setCargando(true);
-    const [resPeriodo, resCursos] = await Promise.all([
+    const [resPeriodo, resCursos, resMat] = await Promise.all([
       obtenerPeriodoActual(),
       obtenerCursosDisponibles(),
+      listarMatriculas(),
     ]);
     if (!resPeriodo.error) setPeriodo(resPeriodo.data);
     if (!resCursos.error) {
@@ -48,6 +49,12 @@ export default function SolicitarMatricula() {
         repetir: cursos.filter(c => c.tipo === "repetir"),
         adelanto: cursos.filter(c => c.tipo === "adelanto"),
       });
+    }
+    if (!resMat.error && resMat.data) {
+      const lista = Array.isArray(resMat.data) ? resMat.data : (resMat.data.matriculas || []);
+      if (lista.length > 0) {
+        setUltimaMatriculaId(lista[lista.length - 1].id);
+      }
     }
     if (resCursos.error) setError(resCursos.error);
     setCargando(false);
@@ -178,15 +185,18 @@ export default function SolicitarMatricula() {
       {mensaje && <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold rounded-xl shadow-sm">✓ {mensaje}</div>}
 
       {ultimaMatriculaId && (
-        <div className="mb-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
-          <p className="text-base text-green-800 font-bold mb-3">✓ ¡Su solicitud de matrícula ha sido procesada correctamente!</p>
+        <div className="mb-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p className="text-base text-green-800 font-extrabold mb-1">✓ Matrícula Registrada y Vigente</p>
+            <p className="text-xs text-green-700 font-medium">Su ficha oficial de matrícula se encuentra disponible para consultar e imprimir.</p>
+          </div>
           <a
             href={urlDescargarFicha(ultimaMatriculaId)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-5 py-2.5 text-sm font-semibold text-green-700 bg-white border border-green-300 rounded-lg hover:bg-green-100 transition-colors shadow-sm no-underline"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-sm no-underline"
           >
-            Descargar Constancia de Solicitud (PDF)
+            📥 Descargar Ficha de Matrícula (PDF)
           </a>
         </div>
       )}

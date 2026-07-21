@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { solicitarCertificado } from "../servicios/certificados.servicio";
+import { useState, useEffect } from "react";
+import { solicitarCertificado, misSolicitudes, urlDescargarCertificado } from "../servicios/certificados.servicio";
 
 const TIPOS_CERTIFICADO = [
   { value: "Constancia de estudios", label: "Constancia de estudios" },
@@ -15,6 +15,21 @@ export default function CertificadosSolicitar() {
   const [respuesta, setRespuesta] = useState(null);
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
+  const [misDocumentos, setMisDocumentos] = useState([]);
+  const [cargandoLista, setCargandoLista] = useState(true);
+
+  useEffect(() => {
+    cargarMisSolicitudes();
+  }, []);
+
+  async function cargarMisSolicitudes() {
+    setCargandoLista(true);
+    const { data } = await misSolicitudes();
+    if (data) {
+      setMisDocumentos(Array.isArray(data) ? data : (data.certificados || []));
+    }
+    setCargandoLista(false);
+  }
 
   async function manejarEnvio(evento) {
     evento.preventDefault();
@@ -38,6 +53,7 @@ export default function CertificadosSolicitar() {
     setComprobante(null);
     const fileInput = document.getElementById("comprobante-input");
     if (fileInput) fileInput.value = "";
+    await cargarMisSolicitudes();
   }
 
   const esErrorDeuda = error?.codigo === "DEUDA_PENDIENTE";
@@ -147,6 +163,63 @@ export default function CertificadosSolicitar() {
           </div>
         </div>
       )}
+
+      {/* Historial de mis solicitudes de certificados */}
+      <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Mis Trámites y Certificados Emitidos</h3>
+        {cargandoLista ? (
+          <p className="text-sm text-gray-500 py-4">Cargando trámites...</p>
+        ) : misDocumentos.length === 0 ? (
+          <p className="text-sm text-gray-500 py-6 text-center">No registra solicitudes de certificados en el sistema.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200 text-left">
+                  <th className="px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">Ticket</th>
+                  <th className="px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">Documento</th>
+                  <th className="px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider">Fecha Solicitud</th>
+                  <th className="px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Estado</th>
+                  <th className="px-6 py-3 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {misDocumentos.map((doc) => (
+                  <tr key={doc.id} className="hover:bg-gray-50/50">
+                    <td className="px-6 py-4 font-black text-gray-900">{doc.ticket_codigo || `#${doc.id}`}</td>
+                    <td className="px-6 py-4 font-bold text-gray-800">{doc.tipo}</td>
+                    <td className="px-6 py-4 text-gray-600">{doc.fecha_solicitud || doc.created_at || "—"}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
+                        doc.estado === "Emitido" ? "bg-green-50 text-green-700 border-green-200"
+                        : doc.estado?.includes("Autorizado") ? "bg-blue-50 text-blue-700 border-blue-200"
+                        : doc.estado?.includes("Rechazado") ? "bg-red-50 text-red-700 border-red-200"
+                        : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                      }`}>
+                        {doc.estado}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {doc.estado === "Emitido" ? (
+                        <a
+                          href={urlDescargarCertificado(doc.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm no-underline transition-colors"
+                        >
+                          📥 Descargar Certificado (PDF)
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-400 font-medium">En proceso de trámite</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

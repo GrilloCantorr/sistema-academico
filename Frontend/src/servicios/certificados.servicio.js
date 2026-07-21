@@ -4,6 +4,10 @@ export async function listarSolicitudes() {
   return peticion("/certificados/bandeja");
 }
 
+export async function misSolicitudes() {
+  return peticion("/certificados/mis-solicitudes");
+}
+
 export async function solicitarCertificado(formData) {
   return peticion("/certificados/solicitar", {
     method: "POST",

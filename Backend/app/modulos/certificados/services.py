@@ -391,7 +391,15 @@ class CertificadoService:
         ruta_completa = os.path.join(CARPETA_CERTIFICADOS, nombre_archivo)
 
         if not os.path.exists(ruta_completa):
-            return None, "El documento emitido no se encuentra disponible en el servidor"
+            os.makedirs(CARPETA_CERTIFICADOS, exist_ok=True)
+            base_hash = (
+                f"{certificado.id}-{certificado.estudiante_id}-{certificado.tipo}-"
+                f"{certificado.codigo_verificacion}-{datetime.utcnow().isoformat()}"
+            )
+            hash_doc = hashlib.sha256(base_hash.encode("utf-8")).hexdigest()
+            buffer_pdf = CertificadoService._generar_pdf_certificado(certificado, hash_doc)
+            with open(ruta_completa, "wb") as f:
+                f.write(buffer_pdf.getvalue())
 
         return ruta_completa, None
 

@@ -99,6 +99,7 @@ def mi_historial():
         } if progreso else None,
         "cursos": cursos,
         "plan_progreso": plan_progreso,
+        "matricula_id": matriculas[-1].id if matriculas else None,
     })
 
 
