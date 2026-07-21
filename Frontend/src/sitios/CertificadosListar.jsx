@@ -48,23 +48,8 @@ export default function CertificadosListar() {
     descargarPDF(id);
   }
 
-  async function descargarPDF(id) {
-    const token = localStorage.getItem("token");
-    try {
-      const resp = await fetch(urlDescargarCertificado(id), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!resp.ok) { setError("No se pudo descargar el certificado"); return; }
-      const blob = await resp.blob();
-      const url = window.URL.createObjectURL(blob);
-      const enlace = document.createElement("a");
-      enlace.href = url;
-      enlace.download = `certificado_${id}.pdf`;
-      enlace.click();
-      window.URL.revokeObjectURL(url);
-    } catch {
-      setError("Error al descargar el certificado");
-    }
+  function descargarPDF(id) {
+    window.open(urlDescargarCertificado(id), "_blank");
   }
 
   async function manejarVerificacion(e) {

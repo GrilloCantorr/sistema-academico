@@ -5,7 +5,10 @@ import hashlib
 from datetime import datetime
 
 import qrcode
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4, letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, Image
 from reportlab.pdfgen import canvas
 
 from app import db
