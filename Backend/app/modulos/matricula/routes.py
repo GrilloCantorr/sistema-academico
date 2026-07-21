@@ -62,7 +62,7 @@ def estadisticas():
 
 
 @matricula_bp.route('/<int:matricula_id>/ficha', methods=['GET'])
-@rol_requerido("estudiante")
+@rol_requerido("estudiante", "administrador", "direccion")
 def descargar_ficha(matricula_id):
     return controllers.descargar_ficha(matricula_id)
 
