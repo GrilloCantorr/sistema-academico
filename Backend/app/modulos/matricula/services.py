@@ -1,7 +1,10 @@
 import io
+import qrcode
 from datetime import datetime
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, Image
 from app import db
 from app.modelos.matricula import Matricula
 from app.modelos.matricula_detalle import MatriculaDetalle
@@ -21,46 +24,144 @@ class MatriculaService:
         detalles = MatriculaDetalle.query.filter_by(matricula_id=matricula_id).all()
 
         buffer = io.BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=letter)
-        width, height = letter
+        doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=30, rightMargin=30, topMargin=30, bottomMargin=30)
+        
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle("TitleCenter", fontSize=16, leading=20, alignment=1, spaceAfter=6, fontName="Helvetica-Bold")
+        subtitle_style = ParagraphStyle("SubtitleCenter", fontSize=10, leading=14, alignment=1, textColor=colors.HexColor("#4b5563"), spaceAfter=15)
+        justified_style = ParagraphStyle("Justified", fontSize=10, leading=14, alignment=4, spaceAfter=12)
+        title2_style = ParagraphStyle("Title2", fontSize=12, leading=16, spaceAfter=6, fontName="Helvetica-Bold")
+        normal_style = styles["Normal"]
 
-        pdf.setFont("Helvetica-Bold", 18)
-        pdf.drawCentredString(width / 2, height - 60, "FICHA DE MATRÍCULA")
+        elementos = []
 
-        pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawString(60, height - 100, "DATOS DEL ESTUDIANTE")
-        pdf.setFont("Helvetica", 11)
-        pdf.drawString(60, height - 120, f"N° de Matrícula: {matricula.id}")
-        pdf.drawString(60, height - 140, f"Estudiante: {estudiante.nombres} {estudiante.apellido_paterno} {estudiante.apellido_materno}")
-        pdf.drawString(60, height - 160, f"Correo: {estudiante.correo_institucional}")
-        pdf.drawString(60, height - 180, f"Periodo: {matricula.periodo_academico.nombre if matricula.periodo_academico else matricula.periodo_academico_id}")
-        pdf.drawString(60, height - 200, f"Semestre: {matricula.semestre.codigo if matricula.semestre else matricula.semestre_id}")
-        pdf.drawString(60, height - 220, f"Estado: {matricula.estado.nombre if matricula.estado else 'N/A'}")
-        pdf.drawString(60, height - 240, f"Pagado: {'Sí' if matricula.pagado else 'No'}")
+        # 1. Membrete Institucional
+        estudiante_codigo = estudiante.usuario.username if estudiante.usuario else str(estudiante.id)
+        header_univ = [
+            ["PORTAL ACADÉMICO UNIVERSITARIO", ""],
+            ["OFICINA DE SERVICIOS ACADÉMICOS Y REGISTRO", f"Código Alumno: {estudiante_codigo}"],
+            ["FICHA OFICIAL DE MATRÍCULA Y REGISTRO", f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M')}"]
+        ]
+        t_header = Table(header_univ, colWidths=[330, 170])
+        t_header.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (0, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (0, 0), 11),
+            ("TEXTCOLOR", (0, 0), (0, 0), colors.HexColor("#1e3a8a")),
+            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 1), (-1, -1), 8),
+            ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#4b5563")),
+            ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("LINEBELOW", (0, 2), (-1, 2), 1, colors.HexColor("#1e3a8a")),
+        ]))
+        elementos.append(t_header)
+        elementos.append(Spacer(1, 15))
 
-        pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawString(60, height - 280, "CURSOS MATRICULADOS")
-        pdf.setFont("Helvetica", 10)
+        # 2. Párrafo de Certificación
+        texto_cert = (
+            f"Por medio del presente documento, la Dirección de Servicios Académicos y Registro certifica que el estudiante "
+            f"<b>{estudiante.nombres} {estudiante.apellido_paterno} {estudiante.apellido_materno}</b>, "
+            f"inscrito en la especialidad de <b>{estudiante.especialidad.nombre if estudiante.especialidad else '—'}</b>, "
+            f"se encuentra registrado e inscrito formalmente en las asignaturas detalladas a continuación."
+        )
+        elementos.append(Paragraph(texto_cert, justified_style))
+        elementos.append(Spacer(1, 12))
 
-        y = height - 300
-        for detalle in detalles:
-            seccion = detalle.seccion_curso
-            curso_nombre = seccion.curso.nombre if seccion and seccion.curso else f"Seccion #{detalle.seccion_curso_id}"
-            pdf.drawString(70, y, f"- {curso_nombre}")
-            y -= 18
-            if y < 60:
-                pdf.showPage()
-                y = height - 60
+        # 3. Metadatos de la matrícula
+        semestre_codigo = matricula.semestre.codigo if matricula.semestre else f"Semestre {matricula.semestre_id}"
+        estado_nombre = matricula.estado.nombre if matricula.estado else "Pendiente"
+        pago_estado = "Confirmado / Pagado" if matricula.pagado else "Pendiente de Pago"
+        fecha_reg = matricula.created_at.strftime('%d/%m/%Y %H:%M') if matricula.created_at else datetime.now().strftime('%d/%m/%Y')
+        
+        meta_data = [
+            ["N° Solicitud/Matrícula:", str(matricula.id), "Semestre de Ingreso:", semestre_codigo],
+            ["Fecha de Registro:", fecha_reg, "Estado Administrativo:", estado_nombre],
+            ["Derecho de Pago:", pago_estado, "Condición Académica:", "Regular"]
+        ]
+        t_meta = Table(meta_data, colWidths=[130, 120, 130, 120])
+        t_meta.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+            ("FONTNAME", (2, 0), (2, -1), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("TEXTCOLOR", (1, 2), (1, 2), colors.HexColor("#10b981") if matricula.pagado else colors.HexColor("#ef4444")),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LINEBELOW", (0, 0), (-1, -1), 0.5, colors.HexColor("#f3f4f6")),
+        ]))
+        elementos.append(t_meta)
+        elementos.append(Spacer(1, 15))
 
-        if not detalles:
-            pdf.drawString(70, y, "(Sin cursos registrados)")
+        # 4. Asignaturas inscritas
+        elementos.append(Paragraph("Detalle de Asignaturas Inscritas", title2_style))
+        elementos.append(Spacer(1, 6))
 
-        pdf.setFont("Helvetica-Oblique", 8)
-        pdf.drawString(60, 40, f"Generado el {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+        if detalles:
+            header_det = [["Código", "Asignatura / Curso", "Sección", "Créditos"]]
+            rows_det = []
+            total_creditos = 0
+            for d in detalles:
+                seccion = d.seccion_curso
+                curso = seccion.curso if seccion else None
+                curso_codigo = curso.codigo if curso else "—"
+                curso_nom = curso.nombre if curso else f"Sección {d.seccion_curso_id}"
+                seccion_nom = f"Sec. {seccion.id}" if seccion else "Única"
+                cred = curso.creditos if curso else 0
+                total_creditos += cred
+                
+                rows_det.append([curso_codigo, curso_nom, seccion_nom, str(cred)])
+            
+            rows_det.append(["", "TOTAL CRÉDITOS INSCRITOS", "", str(total_creditos)])
+            
+            t_det = Table(header_det + rows_det, colWidths=[70, 230, 80, 60])
+            t_det.setStyle(TableStyle([
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#059669")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("ALIGN", (3, 0), (3, -1), "CENTER"),
+                ("ALIGN", (2, 0), (2, -1), "CENTER"),
+                ("GRID", (0, 0), (-1, -2), 0.5, colors.HexColor("#e5e7eb")),
+                ("FONTNAME", (1, -1), (1, -1), "Helvetica-Bold"),
+                ("FONTNAME", (3, -1), (3, -1), "Helvetica-Bold"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -2), [colors.white, colors.HexColor("#fafdfb")]),
+            ]))
+            elementos.append(t_det)
+        else:
+            elementos.append(Paragraph("No se encontraron cursos inscritos en esta matrícula.", normal_style))
 
-        pdf.showPage()
-        pdf.save()
+        elementos.append(Spacer(1, 25))
 
+        # 5. Firmas y QR Code
+        url_verificacion = f"http://localhost:5000/api/matriculas/{matricula.id}/ficha"
+        qr = qrcode.QRCode(version=1, box_size=4, border=1)
+        qr.add_data(url_verificacion)
+        qr.make(fit=True)
+        img_qr = qr.make_image(fill_color="black", back_color="white")
+        buf_qr = io.BytesIO()
+        img_qr.save(buf_qr, format="PNG")
+        buf_qr.seek(0)
+        qr_flowable = Image(buf_qr, width=70, height=70)
+        
+        firmas_data = [
+            ["___________________________", qr_flowable, "___________________________"],
+            ["Oficina de Registro Académico", "Código de Verificación QR", "Firma del Estudiante"],
+            ["Sello Digital Autorizado", f"Constancia N°: REG-{matricula.id:06d}", f"DNI: {estudiante.dni or '—'}"]
+        ]
+        t_firmas = Table(firmas_data, colWidths=[180, 140, 180])
+        t_firmas.setStyle(TableStyle([
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 1), (-1, -1), 8),
+            ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#4b5563")),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ]))
+        elementos.append(t_firmas)
+
+        doc.build(elementos)
         buffer.seek(0)
         return buffer, None
 
