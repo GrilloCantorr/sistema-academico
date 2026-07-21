@@ -8,7 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak, Image
 from app import db
 from app.modelos.historial_merito import HistorialMerito
 from app.modelos.progreso_estudiante import ProgresoEstudiante
@@ -250,6 +250,7 @@ def kardex_estudiante(estudiante_id):
             "nombre_completo": f"{estudiante.nombres} {estudiante.apellido_paterno} {estudiante.apellido_materno}",
             "correo_institucional": estudiante.correo_institucional,
             "codigo": estudiante.usuario.username if estudiante.usuario else "—",
+            "dni": estudiante.dni,
             "especialidad_nombre": estudiante.especialidad.nombre if estudiante.especialidad else "—",
             "facultad_nombre": estudiante.especialidad.facultad.nombre if estudiante.especialidad and estudiante.especialidad.facultad else "—",
         },
@@ -295,25 +296,43 @@ def descargar_kardex_pdf(estudiante_id):
 
     elementos = []
 
-    elementos.append(Paragraph("KARDEX ACADÉMICO", styles["Title2"]))
-    elementos.append(Paragraph(f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles["Subtitle"]))
-    elementos.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#2563eb")))
-    elementos.append(Spacer(1, 12))
+    # Membrete Institucional en el Kardex
+    header_univ = [
+        ["PORTAL ACADÉMICO UNIVERSITARIO", ""],
+        ["OFICINA DE SERVICIOS ACADÉMICOS Y REGISTRO", f"Código Alumno: {estudiante['codigo'] or estudiante['id']}"],
+        ["REPORTE OFICIAL DE HISTORIAL ACADÉMICO (KARDEX)", f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M')}"]
+    ]
+    t_header = Table(header_univ, colWidths=[330, 170])
+    t_header.setStyle(TableStyle([
+        ("FONTNAME", (0, 0), (0, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (0, 0), 11),
+        ("TEXTCOLOR", (0, 0), (0, 0), colors.HexColor("#1e3a8a")), # Azul oscuro
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 1), (-1, -1), 8),
+        ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#4b5563")),
+        ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LINEBELOW", (0, 2), (-1, 2), 1, colors.HexColor("#1e3a8a")),
+    ]))
+    elementos.append(t_header)
+    elementos.append(Spacer(1, 15))
 
     data_est = [
-        ["Estudiante:", estudiante["nombre_completo"], "Código:", estudiante["codigo"] or "—"],
+        ["Estudiante:", estudiante["nombre_completo"], "DNI:", estudiante["dni"] or "—"],
         ["Especialidad:", estudiante["especialidad_nombre"], "Facultad:", estudiante["facultad_nombre"]],
     ]
-    t = Table(data_est, colWidths=[80, 180, 60, 150])
+    t = Table(data_est, colWidths=[80, 180, 60, 180])
     t.setStyle(TableStyle([
         ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("FONTNAME", (2, 0), (2, -1), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, -1), 9),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 3),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("LINEBELOW", (0, 0), (-1, -1), 0.5, colors.HexColor("#f3f4f6")),
     ]))
     elementos.append(t)
-    elementos.append(Spacer(1, 10))
+    elementos.append(Spacer(1, 12))
 
     if progreso:
         data_prog = [
@@ -461,20 +480,32 @@ def descargar_kardex_pdf(estudiante_id):
         else:
             elementos.append(Paragraph("No se encontraron cursos inscritos en esta matrícula.", styles["Normal"]))
             
-        elementos.append(Spacer(1, 35))
+        elementos.append(Spacer(1, 20))
+        
+        import qrcode
+        # Generar código QR para verificación del certificado
+        url_verificacion = f"http://localhost:5000/api/matriculas/{matricula.id}/ficha"
+        qr = qrcode.QRCode(version=1, box_size=4, border=1)
+        qr.add_data(url_verificacion)
+        qr.make(fit=True)
+        img_qr = qr.make_image(fill_color="black", back_color="white")
+        buf_qr = BytesIO()
+        img_qr.save(buf_qr, format="PNG")
+        buf_qr.seek(0)
+        qr_flowable = Image(buf_qr, width=70, height=70)
         
         firmas_data = [
-            ["", ""],
-            ["___________________________", "___________________________"],
-            ["Oficina de Registro Académico", "Firma del Estudiante"],
-            ["Sello Digital Autorizado", f"Código de Validación: REG-{matricula.id:06d}"]
+            ["___________________________", qr_flowable, "___________________________"],
+            ["Oficina de Registro Académico", "Código de Verificación QR", "Firma del Estudiante"],
+            ["Sello Digital Autorizado", f"Constancia N°: REG-{matricula.id:06d}", f"DNI: {estudiante.get('dni') or '—'}"]
         ]
-        t_firmas = Table(firmas_data, colWidths=[240, 240])
+        t_firmas = Table(firmas_data, colWidths=[180, 140, 180])
         t_firmas.setStyle(TableStyle([
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-            ("FONTNAME", (0, 2), (-1, 3), "Helvetica"),
-            ("FONTSIZE", (0, 2), (-1, -1), 8),
-            ("TEXTCOLOR", (0, 2), (-1, -1), colors.HexColor("#4b5563")),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 1), (-1, -1), 8),
+            ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#4b5563")),
             ("TOPPADDING", (0, 0), (-1, -1), 2),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
         ]))
